@@ -42,10 +42,10 @@ class Movie(models.Model):
     companys = models.CharField(max_length=50, blank=True)
 
     # 영화 포스터
-    # posterSrc = models.CharField(max_length=100)
+    posterSrc = models.TextField(null=True)
 
     # 관객 수
-    # 
+    popularity = models.CharField(max_length=20, null=True)
 
     # 영화 예고편
     # trailer

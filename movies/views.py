@@ -1,5 +1,12 @@
 import requests
-from .kobis import URLMaker
+
+# 영진위 api
+from .movie_api import URLMaker_kobis, URLMaker_naver
+
+# 크롤링
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+from urllib.parse import quote
 
 from django.shortcuts import get_object_or_404
 
@@ -15,6 +22,8 @@ from .serializers import MovieSerializer, ReviewSerializer
 from .models import Movie, Review
 
 
+
+
 @api_view(['GET', 'POST'])
 def movie_list_create(request):
     if request.method == 'GET':
@@ -24,7 +33,7 @@ def movie_list_create(request):
     else:
         for curPage in range(1, 2):
             # 영화인 목록 url 저장
-            um = URLMaker()
+            um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
 
             # API에 요청
@@ -42,6 +51,28 @@ def movie_list_create(request):
                     movie['companys'] = movies_dict.get('movieListResult').get('movieList')[idx].get('companys')[0]['companyNm']
                 else:
                     movie['companys'] = ''
+
+                movieNm = quote(movie['movieNm'])
+                # 포스터 추가
+                try:
+                    response = urlopen(f'https://search.naver.com/search.naver?sm=tab_hty.top&where=image&query={movieNm}+{quote("영화 메인 포스터")}')
+                    soup = BeautifulSoup(response, 'html.parser')
+                    movie['posterSrc'] = str(soup.select("img._img")[0]['data-source'])
+                except:
+                    pass
+                # 관객 수 추가
+                try:
+                    response = urlopen(f'https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query={movieNm}+{quote("영화")}')
+                    soup = BeautifulSoup(response, 'html.parser')
+                    for i in soup.select("dl div.info_group dd"):
+                        if i.get_text()[-1] == '명':
+                            movie['popularity'] = i.get_text()
+                            break
+                except:
+                    pass
+
+                
+
                 serializer = MovieSerializer(data=movie)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
