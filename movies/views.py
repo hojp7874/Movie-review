@@ -11,8 +11,8 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import MovieSerializer
-from .models import Movie
+from .serializers import MovieSerializer, ReviewSerializer
+from .models import Movie, Review
 
 
 @api_view(['GET', 'POST'])
@@ -34,23 +34,35 @@ def movie_list_create(request):
             movies_dict = r.json()
             for idx in range(10):
                 movie = movies_dict.get('movieListResult').get('movieList')[idx]
-                try:
-                    movie['directors'] = [ movies_dict.get('movieListResult').get('movieList')[idx].get('directors')[0].get('peopleNm') ]
-                    print(movies_dict.get('movieListResult').get('movieList')[idx].get('directors')[0].get('peopleNm'))
-                except:
-                    pass
+                if movie['directors']:
+                    movie['directors'] = movies_dict.get('movieListResult').get('movieList')[idx].get('directors')[0]['peopleNm']
+                else:
+                    movie['directors'] = ''
+                if movie['companys']:
+                    movie['companys'] = movies_dict.get('movieListResult').get('movieList')[idx].get('companys')[0]['companyNm']
+                else:
+                    movie['companys'] = ''
                 serializer = MovieSerializer(data=movie)
-                # movie_directors = (movie['directors'])
-                # for movie_director in movie_directors:
-                #     serializer.directorNm = movie_director['peopleNm']
-                #     print(movie_director['peopleNm'])
-                #     print(serializer.directorNm)
                 if serializer.is_valid(raise_exception=True):
-                        # serializer.companyNm = movie['companys'][0]['companyNm']
                     serializer.save()
         movies = Movie.objects.all()[::-1]
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'POST'])
+def review_list_create(request, movie_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    if request.method == 'GET':
+        reviews = Review.objects.filter(movie=movie)
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
+    else:
+        serializer = ReviewSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            print(request.user)
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # @api_view(['PUT', 'DELETE'])

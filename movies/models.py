@@ -36,10 +36,22 @@ class Movie(models.Model):
     repGenreNm = models.CharField(max_length=50)
     
     # 감독
-    directorNm = models.CharField(max_length=50, null=True)
+    directors = models.CharField(max_length=50, blank=True)
     
     # 제작사
-    companyNm = models.CharField(max_length=50, null=True)
+    companys = models.CharField(max_length=50, blank=True)
 
     # 영화 포스터
-    # poster = models.CharField(max_length=100)
+    # posterSrc = models.CharField(max_length=100)
+
+    # 관객 수
+    # 
+
+    # 영화 예고편
+    # trailer
+
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
+    title = models.CharField(max_length=50)
+    content = models.TextField()
