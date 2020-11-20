@@ -1,22 +1,32 @@
 <template>
   <div id="app">
-    <h1>check app</h1>
-    <Home />
-    <!-- <router-link :to="{ name: 'Main' }"></router-link> -->
+
+    <router-view />
   </div>
 </template>
 
 <script>
-import Home from '@/components/Home.vue'
 export default {
   name : 'App',
   components : {
-    Home
+  },
+  data : function(){
+    return {
+    }
   }
 }
 </script>
 
 
 <style>
-
+*{
+  font-family: 'Noto Serif KR', serif;
+}
+/*  #2a2a2e */
+#app{
+  background-color: #323437;
+  width: 100vw;
+  height:100vh;
+}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap');
 </style>
