@@ -43,35 +43,48 @@ def movie_list_create(request):
             movies_dict = r.json()
             for idx in range(10):
                 movie = movies_dict.get('movieListResult').get('movieList')[idx]
-                if movie['directors']:
-                    movie['directors'] = movies_dict.get('movieListResult').get('movieList')[idx].get('directors')[0]['peopleNm']
-                else:
-                    movie['directors'] = ''
                 if movie['companys']:
                     movie['companys'] = movies_dict.get('movieListResult').get('movieList')[idx].get('companys')[0]['companyNm']
                 else:
                     movie['companys'] = ''
 
                 movieNm = quote(movie['movieNm'])
+                response = urlopen(f'https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query={movieNm}+{quote("영화")}')
+                soup = BeautifulSoup(response, 'html.parser')
+
                 # 포스터 추가
                 try:
-                    response = urlopen(f'https://search.naver.com/search.naver?sm=tab_hty.top&where=image&query={movieNm}+{quote("영화 메인 포스터")}')
-                    soup = BeautifulSoup(response, 'html.parser')
-                    movie['posterSrc'] = str(soup.select("img._img")[0]['data-source'])
+                    movie['posterSrc'] = str(soup.select("a.thumb._item")[0].find('img')['src'])
                 except:
                     pass
+
                 # 관객 수 추가
                 try:
-                    response = urlopen(f'https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query={movieNm}+{quote("영화")}')
-                    soup = BeautifulSoup(response, 'html.parser')
-                    for i in soup.select("dl div.info_group dd"):
-                        if i.get_text()[-1] == '명':
-                            movie['popularity'] = i.get_text()
+                    for people in soup.select("dl div.info_group dd"):
+                        if people.get_text()[-1] == '명':
+                            movie['popularity'] = people.get_text()
                             break
                 except:
                     pass
 
+                # 감독, 배우 가져오기
+                try:
+                    peoples = soup.select(".title_box span a")
+                    for i in range(len(peoples)):
+                        role = soup.select(".title_box span a")[i].get_text()
+                        name = soup.select(".area_card div.thumb")[i].find("img")["alt"]
+                        image = soup.select(".area_card div.thumb")[i].find("img")["src"]
+                        print(role, name, image)
+                        if role == '감독':
+                            movie['directors'] = name
+                except:
+                    pass
+
                 
+                if type(movie['directors']) != str and movie['directors']:
+                    movie['directors'] = movies_dict.get('movieListResult').get('movieList')[idx].get('directors')[0]['peopleNm']
+                elif not movie['directors']:
+                    movie['directors'] = ''
 
                 serializer = MovieSerializer(data=movie)
                 if serializer.is_valid(raise_exception=True):
