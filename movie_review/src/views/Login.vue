@@ -26,6 +26,7 @@
                     <b-form-input
                         id="input-lazy"
                         placeholder="Enter your PASSWORD"
+                        type="password"
                     ></b-form-input>
                     </b-form-group>
                 </div>
