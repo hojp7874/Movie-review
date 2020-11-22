@@ -18,8 +18,8 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import MovieSerializer, ReviewSerializer
-from .models import Movie, Review
+from .serializers import MovieSerializer, ReviewSerializer, PeopleSerializer
+from .models import Movie, Review, People
 
 
 
@@ -31,7 +31,7 @@ def movie_list_create(request):
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
     else:
-        for curPage in range(1, 2):
+        for curPage in range(1, 3):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -67,28 +67,41 @@ def movie_list_create(request):
                 except:
                     pass
 
-                # 감독, 배우 가져오기
-                try:
-                    peoples = soup.select(".title_box span a")
-                    for i in range(len(peoples)):
-                        role = soup.select(".title_box span a")[i].get_text()
-                        name = soup.select(".area_card div.thumb")[i].find("img")["alt"]
-                        image = soup.select(".area_card div.thumb")[i].find("img")["src"]
-                        print(role, name, image)
-                        if role == '감독':
-                            movie['directors'] = name
-                except:
-                    pass
-
-                
-                if type(movie['directors']) != str and movie['directors']:
-                    movie['directors'] = movies_dict.get('movieListResult').get('movieList')[idx].get('directors')[0]['peopleNm']
-                elif not movie['directors']:
-                    movie['directors'] = ''
-
                 serializer = MovieSerializer(data=movie)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
+
+
+                # 감독, 배우 가져오기
+                movieObj = get_object_or_404(Movie, pk=movie['movieCd'])
+                try:
+                    peoples = soup.select("div.cm_info_box.scroll_img_vertical_87_98 div.area_card")
+                    for people in peoples:
+                        name = people.find("strong").get_text()
+                        # 만약 이미 있는 배우라면
+                        if not People.objects.filter(name=name).exists():
+                            try:
+                                role = people.find("span").get_text()
+                                if role not in ['감독', '각본']:
+                                    role = '배우'
+                            except: role = '배우'
+                            photo = people.find("img")["src"]
+                            if photo[:4] == 'data': photo = '이미지 없음'
+                            serializer = PeopleSerializer(data={"name": name, "role": role, "photo": photo})
+                            if serializer.is_valid(raise_exception=True):
+                                serializer.save()
+
+                        # 영화와 인물 ManytoMany 매칭
+                        people = get_object_or_404(People, name=name)
+                        print('people 불러오기 완료')
+                        people.movies.add(movieObj)
+                        print('성공')
+
+                except:
+                    print('실패')
+                    print(movieObj)
+
+
         movies = Movie.objects.all()[::-1]
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
