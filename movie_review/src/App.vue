@@ -7,13 +7,14 @@
 
 <script>
 export default {
-  name : 'App',
-  components : {
-  },
-  data : function(){
+  name: 'App',
+  data: function() {
     return {
     }
-  }
+  },
+  created: function() {
+    this.$store.dispatch('getMovies')
+  },
 }
 </script>
 

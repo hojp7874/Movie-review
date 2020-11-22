@@ -4,7 +4,7 @@
     <div id="loginbox">
       <div id="login">
         <div id="h2div" class="pb-0 col-12">
-          <h2>LOGIN</h2>
+          <h2>WELCOME</h2>
         </div>
         <div>
           <b-form-group
@@ -21,19 +21,24 @@
 
           <b-form-group class="mb-0" label="PASSWORD" label-for="input-lazy">
             <b-form-input
-              @keypress.enter="login"
-              v-model="credentials.password"
               id="input-lazy"
-              placeholder="Enter your PASSWORD"
+              v-model="credentials.password"
+              placeholder="Enter your Password"
+              type="password"
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group class="mb-0" label="CONFIRM PASSWORD" label-for="input-lazy">
+            <b-form-input
+              id="input-lazy"
+              v-model="credentials.passwordConfirmation"
+              @keypress.enter="signup"
+              placeholder="Type Your Password Again"
               type="password"
             ></b-form-input>
           </b-form-group>
         </div>
         <div>
-          <b-button @click="login" variant="primary" class="col-12">Login</b-button>
-        </div>
-        <div class="pt-0">
-          <router-link :to="{ name: 'Signup' }">Not Enrolled? Sign Up Now.</router-link>
+          <b-button @click='signup' variant="primary" class="col-12">Sign Up!</b-button>
         </div>
       </div>
     </div>
@@ -44,37 +49,37 @@
 import Navbar from "../components/Navbar.vue";
 import axios from 'axios'
 
-const SERVER_URL = process.env.VUE_APP_SERVER_URL
+// const SERVER_URL = process.env.VUE_APP_SERVER_URL
 
 export default {
-  components: {
-    Navbar,
+  name: 'Singup',
+  components : {
+    Navbar
   },
-  name: "Login",
-
-  data: function() {
+  data: function () {
     return {
       credentials: {
-        username: "",
-        password: "",
-      },
-    };
+        username: '',
+        password: '',
+        passwordConfirmation: '',
+      }
+    }
   },
   methods: {
-    login: function() {
-      this.$router.push({ name: "Main" });
-      axios.post(`${SERVER_URL}/accounts/api-token-auth/`,this.credentials)
-          .then((res)=>{
-              localStorage.setItem('jwt',res.data.token)
-              this.$store.dispatch('login')
-              this.$router.push({name:'Main'})
-          })
-          .catch((err)=>{
-              console.log(err)
-          })
-    },
-  },
-};
+    signup: function () {
+      // axios.post(`${SERVER_URL}/accounts/signup/`, this.credentials)
+      axios.post(`http://127.0.0.1:8000/accounts/signup/`, this.credentials)
+        .then((res) => {
+          console.log(res)
+          this.$router.push({ name: 'Login' })
+          alert('회원가입이 완료되었습니다!!')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  }
+}
 </script>
 
 <style scoped>

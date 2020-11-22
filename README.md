@@ -18,3 +18,19 @@
 - Router
 - Navbar
 - Login Page
+
+
+
+## 1121
+
+- Carousel
+- flip card
+
+
+
+## 1122
+
+- RESTful API (with Django)
+- movie List
+
+- account (signup, login)
