@@ -19,7 +19,7 @@
           v-for="(movie,idx) in movies"
           :key="idx"
         > 
-          <template img>
+          <template v-slot:img>
             <MovieCard
               :movie='movie'
               :idx='idx'
