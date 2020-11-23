@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie, Review, People
+from .models import Movie, Review, People, UserMovieScore
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -23,3 +23,10 @@ class PeopleSerializer(serializers.ModelSerializer):
     class Meta:
         model = People
         fields = ["name", "role", "photo"]
+
+    
+class UserMovieScoreSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserMovieScore
+        fields = "__all__"

@@ -18,7 +18,7 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import MovieSerializer, ReviewSerializer, PeopleSerializer
+from .serializers import MovieSerializer, ReviewSerializer, PeopleSerializer, UserMovieScoreSerializer
 from .models import Movie, Review, People, UserMovieScore
 
 
@@ -119,7 +119,7 @@ def movie_score_list_create(request):
     # 불러오기
     if request.method == 'GET':
         scores = UserMovieScore.objects.all()
-        serializer = MovieSerializer(scores, many=True)
+        serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
     else:
         pass
@@ -130,7 +130,7 @@ def movie_score_list_create(request):
 def people_list(request):
     # 불러오기
     peoples = People.objects.all()
-    serializer = MovieSerializer(peoples, many=True)
+    serializer = PeopleSerializer(peoples, many=True)
     return Response(serializer.data)
 
 
