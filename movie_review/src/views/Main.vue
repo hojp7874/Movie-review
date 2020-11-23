@@ -1,5 +1,5 @@
 <template>
-  <div id='app'>
+  <div id='Main'>
     <Navbar />
     <br>
     <Recommended />
@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style scoped>
-#app{
+#Main{
   background-color: #323437;
   width: 100vw;
   height:100vh;

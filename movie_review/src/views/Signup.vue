@@ -1,8 +1,8 @@
 <template>
-  <div id="loginPage">
+  <div id="SingupPage">
     <Navbar />
-    <div id="loginbox">
-      <div id="login">
+    <div id="Singupbox">
+      <div id="Singup">
         <div id="h2div" class="pb-0 col-12">
           <h2>WELCOME</h2>
         </div>
@@ -88,13 +88,13 @@ export default {
   font-family: "Lato", sans-serif;
 }
 
-#loginPage {
+#SingupPage {
   width: 100vw;
   height: 100vh;
   position: relative;
   display: flexbox;
 }
-#loginPage::before {
+#SingupPage::before {
   width: 100%;
   height: 100%;
   content: "";
@@ -107,18 +107,18 @@ export default {
   left: 0px;
   right: 0px;
 }
-#loginPage * {
+#SingupPage * {
   position: relative;
 }
 
-#loginbox {
+#Singupbox {
   display: flex;
   width: 100vw;
   height: 90vh;
   justify-content: center;
   align-items: center;
 }
-#login {
+#Singup {
   width: 25vw;
   height: 50vh;
   background-color: white;
@@ -139,22 +139,22 @@ h2 {
 label {
   margin: 2%;
 }
-#login > div {
+#Singup > div {
   padding: 3%;
 }
 a {
   font-size: 80%;
 }
-#login > :nth-child(1) {
+#Singup > :nth-child(1) {
   height: 20%;
 }
-#login > :nth-child(2) {
+#Singup > :nth-child(2) {
   height: 50%;
 }
-#login > :nth-child(3) {
+#Singup > :nth-child(3) {
   height: 15%;
 }
-#login > :nth-child(4) {
+#Singup > :nth-child(4) {
   height: 10%;
 }
 </style>

@@ -14,6 +14,8 @@ export default {
   },
   created: function() {
     this.$store.dispatch('getMovies')
+    this.$store.dispatch('getMovieScore')
+    this.$store.dispatch('getMovieCrew')
   },
 }
 </script>

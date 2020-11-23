@@ -27,10 +27,10 @@
             <template #button-content>
               <em class="whitefont">마이페이지</em>
             </template>
-            <b-dropdown-item v-show="login" href="#">내 활동</b-dropdown-item>
-            <b-dropdown-item v-show="login" href="#">로그아웃</b-dropdown-item>
-            <b-dropdown-item v-show="!login" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
-            <b-dropdown-item v-show="!login" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="loginStatus" href="#">내 활동</b-dropdown-item>
+            <b-dropdown-item v-show="loginStatus" @click='logout'>로그아웃</b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: "Navbar",
@@ -47,19 +47,15 @@ export default {
     toMain: function() {
       this.$router.push({ name: "Main" });
     },
+    logout : function(){
+      this.$store.dispatch('logout')
+    }
   },
   computed : {
-    // ...mapState([
-    //   'loginStatus'
-    // ])
-    login : function(){
-      if(localStorage.getItem('jwt')){
-        return true
-      }else{
-        return false
-      }
-    }
-  }
+    ...mapState([
+      'loginStatus'
+    ])
+  },
 };
 </script>
 
