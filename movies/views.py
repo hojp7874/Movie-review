@@ -19,18 +19,20 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from .serializers import MovieSerializer, ReviewSerializer, PeopleSerializer
-from .models import Movie, Review, People
+from .models import Movie, Review, People, UserMovieScore
 
 
 
 
 @api_view(['GET', 'POST'])
 def movie_list_create(request):
+    # 영화 data 불러오기
     if request.method == 'GET':
-        movies = Movie.objects.all()[::-1]
+        movies = Movie.objects.all()
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
     else:
+        # 영화 data 만들기
         for curPage in range(5, 6):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
@@ -111,6 +113,31 @@ def movie_list_create(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+# 영화 평점 불러오기, 만들기
+@api_view(['GET', 'POST'])
+def movie_score_list_create(request):
+    # 불러오기
+    if request.method == 'GET':
+        scores = UserMovieScore.objects.all()
+        serializer = MovieSerializer(scores, many=True)
+        return Response(serializer.data)
+    else:
+        pass
+
+
+# 영화인 불러오기, 만들기
+@api_view(['GET'])
+def people_list(request):
+    # 불러오기
+    peoples = People.objects.all()
+    serializer = MovieSerializer(peoples, many=True)
+    return Response(serializer.data)
+
+
+
+
+
+# 리뷰 보기, 쓰기
 @api_view(['GET', 'POST'])
 def review_list_create(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)

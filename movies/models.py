@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Movie(models.Model):
     # 영화 코드
@@ -53,15 +54,29 @@ class Movie(models.Model):
     # 영화 줄거리
     story = models.TextField(null=True)
 
+    # 영화 평점
+
+
+# 영화 리뷰
 class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
     title = models.CharField(max_length=50)
     content = models.TextField()
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews')
 
 
+# 영화 감독, 등장인물
 class People(models.Model):
     movies = models.ManyToManyField(Movie, related_name='peoples')
     name = models.CharField(max_length=20)
     role = models.CharField(max_length=10)
     photo = models.TextField()
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_peoples')
+
+
+# 영화 평점
+class UserMovieScore(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    score = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
