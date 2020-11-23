@@ -1,14 +1,15 @@
 <template>
   <div id="MovieList">
-    <div class="m-3">
+    <div id="m3">
       <h2>모든 영화</h2>
     </div>
-    <div class="flip-card-container p-0">
+    <div class="flip-card-container p-0 col-12">
       <MovieCard
         v-for="(movie,idx) in movies"
         :key="idx"
         :movie='movie'
         :idx='idx'
+        class="p-1"
       />
     </div>
   </div>
@@ -45,7 +46,10 @@ export default {
 #MovieList {
   background-color: #323437;
   width: 100vw;
-  height: 100vh;
+  height: 150vh;
+}
+#m3{
+  margin : 10vh 0;
 }
 * {
   margin: 0;
@@ -54,9 +58,10 @@ export default {
 }
 .flip-card-container {
   width: 100vw;
-  height: 30vh;
+  height: 45vh;
   border-radius: 0.5rem;
   display: flex;
+  flex-flow : row wrap
 }
 h2 {
   text-align: center;

@@ -16,6 +16,7 @@ export default {
     this.$store.dispatch('getMovies')
     this.$store.dispatch('getMovieScore')
     this.$store.dispatch('getMovieCrew')
+    this.$store.dispatch('getUser')
   },
 }
 </script>

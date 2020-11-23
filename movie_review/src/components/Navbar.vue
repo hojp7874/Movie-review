@@ -14,12 +14,16 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
-            <b-form-input
-              size="sm"
-              class="mr-sm-2"
-              placeholder="검색어를 입력하세요"
-            ></b-form-input>
-            <b-button size="sm" class="my-2 my-sm-0" type="submit">🔍</b-button>
+              <b-form-input
+                v-model="searchWord"
+                size="sm"
+                class="mr-sm-2"
+                placeholder="검색어를 입력하세요"
+                ></b-form-input>
+                <!-- <ul v-show="searchWord.length">
+                  <li v-for="(wd,idx) in candidate" :key='idx'></li>
+                </ul> -->
+              <b-button size="sm" class="my-2 my-sm-0" type="submit">🔍</b-button>
           </b-nav-form>
 
           <b-nav-item-dropdown right>
@@ -39,22 +43,39 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: "Navbar",
+  data:function(){
+    return{
+      searchWord : '',
+      // movieList:[],
+      // loginStatus:'',
+    }
+  },
+  components : {
+  },
+    computed : {
+    ...mapState([
+      'loginStatus'
+    ]),
+    ...mapGetters([
+      'movieList'
+    ]),
+    candidate : function(){
+      return this.$store.getters.movieList.filter(function(movie){
+        return (movie.indexOf(this.searchWord) !== -1)
+      })
+    }
+  },
   methods: {
     toMain: function() {
       this.$router.push({ name: "Main" });
     },
     logout : function(){
       this.$store.dispatch('logout')
-    }
-  },
-  computed : {
-    ...mapState([
-      'loginStatus'
-    ])
+    },
   },
 };
 </script>

@@ -3,38 +3,33 @@
     <div>
       <h2>화제의 영화</h2>
     </div>
-    <div id="caru">
-      <b-carousel
-        id="carousel-1"
+      <carousel-3d
         v-model="slide"
-        :interval="4000"
-        controls
-        indicators
-        style="text-shadow: 1px 1px 2px #333;"
-        @sliding-start="onSlideStart"
-        @sliding-end="onSlideEnd"
+        :autoplay="true"
+        :autoplay-timeout="2500"
+        class="col-12"
+        :height='400'
       >
-
-        <b-carousel-slide
+        <slide
           v-for="(movie,idx) in movies"
-          :key="idx"
-        > 
-          <template v-slot:img>
-            <MovieCard
-              :movie='movie'
-              :idx='idx'
-            />
-          </template>
-        </b-carousel-slide>
-
-      </b-carousel>
-    </div>
+          :key="idx" 
+          :index="idx"
+          :height='4000'
+        >
+          <MovieCard
+            :movie='movie'
+            :idx='idx'
+            class="col-12 p-0 m-0"
+          />
+        </slide>
+      </carousel-3d>
   </div>
 </template>
 
 <script>
 import {mapState} from 'vuex'
 import MovieCard from '@/components/MovieCard.vue'
+import { Carousel3d, Slide } from 'vue-carousel-3d';
 
 export default {
   name: "Recommended",
@@ -46,7 +41,9 @@ export default {
     };
   },
   components :{
-    MovieCard
+    MovieCard,
+    Carousel3d,
+    Slide,
   },
   methods: {
     onSlideStart() {
@@ -68,7 +65,12 @@ export default {
 </script>
 <style scoped>
 #Recommend {
-  margin: 2em 0;
+  margin-bottom: 20vh;
+  height: 80vh;
+  position: relative;
+}
+#Recommend>:nth-child(1){
+  margin: 10vh;
 }
 
 h2 {
@@ -80,19 +82,26 @@ h2 {
   margin: 3% 0;
 }
 
-b-carousel-slide {
+div.carousel-3d-slide{
   border-radius: 0.5rem;
 }
-.flip-card-container {
-  width: 100vw;
-  height: 30vh;
-  border-radius: 0.5rem;
-  display: flex;
-}
+
 .carousel-indicators {
   margin-top: 50%;
 }
-#caru > div > div > div > div {
-  left: 38vw;
+b-carousel-slide>div{
+  position: absolute;
+  top: 50vh;
+}
+carousel-3d-slider{
+  padding: 0;
+  border: 0 none;
+}
+div{
+  border: 0 none;
+  background-color: none;
+} 
+carousel-3d{
+  height: 90vh;
 }
 </style>

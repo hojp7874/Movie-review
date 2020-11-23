@@ -3,7 +3,6 @@
     <Navbar />
     <br>
     <Recommended />
-    <div class='blankblock'></div>
     <MovieList 
       :movies="movies"
     />
@@ -31,14 +30,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 #Main{
   background-color: #323437;
-  width: 100vw;
-  height:100vh;
-}
-.blankblock{
-  height: 10vh;
+
 }
 
 </style>

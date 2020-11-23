@@ -12,8 +12,15 @@ export default new Vuex.Store({
     loginStatus : false,
     score:[],
     crew:[],
+    users:[],
+
   },
   getters: {
+    movieList:function(){
+      return this.state.movies.forEach((obj)=>{
+        return obj.movieNm
+      })
+    }
   },
   mutations: {
     GET_MOVIES: function (state, movieData) {
@@ -33,13 +40,19 @@ export default new Vuex.Store({
     GET_MOVIE_CREW : function(state, movieCrew){
       state.crew = movieCrew
     },
+    GET_USERS : function(state,data){
+      state.users = data
+    },
+    // GET_REVIEW : function(state,movieReview){
+    //   state.reviews = movieReview
+    // },
+
   },
   actions: {
     getMovies: function ({commit}) {
       axios.get('http://127.0.0.1:8000/movies/movie_list_create/')
         .then((res) => {
           const movieData = res.data
-          console.log(movieData)
           commit('GET_MOVIES', movieData)
         })
         .catch((err)=>{
@@ -56,7 +69,6 @@ export default new Vuex.Store({
       axios.get('http://127.0.0.1:8000/movies/movie_score_list_create/')
         .then((res) => {
           const movieScore = res.data
-          console.log(movieScore)
           commit('GET_MOVIE_SCORE', movieScore)
         })
         .catch((err)=>{
@@ -67,12 +79,21 @@ export default new Vuex.Store({
       axios.get('http://127.0.0.1:8000/movies/people_list/')
         .then((res) => {
           const movieCrew = res.data
-          console.log(movieCrew)
           commit('GET_MOVIE_CREW', movieCrew)
         })
         .catch((err)=>{
           console.log(err)
         })      
-    }
+      },
+      getUser:function({commit}){
+        axios.get('http://127.0.0.1:8000/accounts/get-users/')
+          .then((res) => {
+            const users = res.data
+            commit('GET_USERS', users)
+          })
+          .catch((err)=>{
+            console.log(err)
+          })      
+    },
   },
 })
