@@ -4,6 +4,7 @@
       <h2>화제의 영화</h2>
     </div>
     <div id="caru">
+
       <b-carousel
         id="carousel-1"
         v-model="slide"
@@ -14,17 +15,23 @@
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
+        <p>inner b-carousel</p>
+
 
         <b-carousel-slide
           v-for="(movie,idx) in movies"
           :key="idx"
         > 
-          <template v-slot:img>
+          <!-- <template v-slot:img> -->
+          <div style="height: 30vh">
             <MovieCard
+              v-for="(movie,idx) in movies"
+              :key="idx"
               :movie='movie'
               :idx='idx'
             />
-          </template>
+          </div>
+          <!-- </template> -->
         </b-carousel-slide>
 
       </b-carousel>
@@ -82,6 +89,7 @@ h2 {
 
 b-carousel-slide {
   border-radius: 0.5rem;
+  height: 50vh;
 }
 .flip-card-container {
   width: 100vw;
