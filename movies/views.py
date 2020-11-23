@@ -133,9 +133,6 @@ def people_list(request):
     return Response(serializer.data)
 
 
-
-
-
 # 리뷰 보기, 쓰기
 @api_view(['GET', 'POST'])
 def review_list_create(request, movie_pk):

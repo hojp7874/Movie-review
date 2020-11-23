@@ -1,7 +1,20 @@
+from .models import User
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import UserSerializer
+from django.contrib.auth import get_user_model
+
+
+# 유저정보 가져오기
+@api_view(['GET'])
+def get_users(request):
+    # users = get_user_model()
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    print('serializer complete')
+    return Response(serializer.data)
 
 
 @api_view(['POST'])
