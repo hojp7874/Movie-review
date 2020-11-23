@@ -3,7 +3,7 @@ from .models import Movie, Review, People, UserMovieScore
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    # peoples = serializers.PrimaryKeyRelatedField(queryset=People.objects.all(), many=True)
+    peoples = serializers.PrimaryKeyRelatedField(queryset=People.objects.all(), many=True)
 
     class Meta:
         model = Movie
@@ -18,11 +18,11 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class PeopleSerializer(serializers.ModelSerializer):
-    # movies = MovieSerializer(many=True, read_only=True)
+    movies = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all(), many=True)
 
     class Meta:
         model = People
-        fields = ["name", "role", "photo"]
+        fields = ["name", "role", "photo", "movies"]
 
     
 class UserMovieScoreSerializer(serializers.ModelSerializer):

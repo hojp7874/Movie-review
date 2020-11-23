@@ -23,7 +23,6 @@ from .models import Movie, Review, People, UserMovieScore
 
 
 
-
 @api_view(['GET', 'POST'])
 def movie_list_create(request):
     # 영화 data 불러오기
@@ -153,21 +152,20 @@ def review_list_create(request, movie_pk):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-# @api_view(['PUT', 'DELETE'])
+@api_view(['PUT', 'DELETE'])
 # @authentication_classes([JSONWebTokenAuthentication])
 # @permission_classes([IsAuthenticated])
-# def todo_update_delete(request, todo_pk):
-#     todo = get_object_or_404(Todo, pk=todo_pk)
+def review_update_delete(request, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
 
-#     if not request.user.todos.filter(pk=todo_pk).exists():
-#         return Response({'detail': '권한이 없습니다.'})
-        
+    if not request.user.reviews.filter(pk=review_pk).exists():
+        return Response({'detail': '권한이 없습니다.'})
 
-#     if request.method == 'PUT':
-#         serializer = TodoSerializer(todo, data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response(serializer.data)
-#     else:
-#         todo.delete()
-#         return Response({ 'id': todo_pk })
+    if request.method == 'PUT':
+        serializer = ReviewSerializer(review, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+    else:
+        review.delete()
+        return Response({ 'id': review_pk })
