@@ -169,3 +169,14 @@ def review_update_delete(request, review_pk):
     else:
         review.delete()
         return Response({ 'id': review_pk })
+
+
+# 리뷰 좋아요
+@api_view(['POST'])
+def review_like(request, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    if review.like_users.filter(pk=request.user.pk).exists():
+        review.like_users.remove(request.user)
+    else:
+        review.like_users.add(request.user)
+    return Response({'리뷰 좋아요가 완료되었습니다.'})
