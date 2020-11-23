@@ -114,14 +114,18 @@ def movie_list_create(request):
 
 # 영화 평점 불러오기, 만들기
 @api_view(['GET', 'POST'])
-def movie_score_list_create(request):
+def movie_score_list_create(request, movie_pk):
     # 불러오기
     if request.method == 'GET':
-        scores = UserMovieScore.objects.all()
+        scores = UserMovieScore.objects.filter(movie=movie_pk)
         serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
     else:
-        pass
+        # 만들기
+        serializer = UserMovieScoreSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
 
 
 # 영화인 불러오기, 만들기
@@ -177,3 +181,5 @@ def review_like(request, review_pk):
     else:
         review.like_users.add(request.user)
     return Response({'리뷰 좋아요가 완료되었습니다.'})
+
+
