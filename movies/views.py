@@ -31,7 +31,7 @@ def movie_list_create(request):
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
     else:
-        for curPage in range(1, 3):
+        for curPage in range(5, 6):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -67,10 +67,14 @@ def movie_list_create(request):
                 except:
                     pass
 
+                # 줄거리 추가
+                try: movie['story'] = soup.select("div.text_expand._ellipsis span")[0].get_text()
+                except: pass
+
+                # movie data 저장
                 serializer = MovieSerializer(data=movie)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
-
 
                 # 감독, 배우 가져오기
                 movieObj = get_object_or_404(Movie, pk=movie['movieCd'])

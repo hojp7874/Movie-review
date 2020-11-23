@@ -50,6 +50,9 @@ class Movie(models.Model):
     # 영화 예고편
     # trailer
 
+    # 영화 줄거리
+    story = models.TextField(null=True)
+
 class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
