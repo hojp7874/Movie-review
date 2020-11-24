@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     toMain: function() {
-      this.$router.push({ name: "Main" });
+      this.$router.go({ name: "Main" });
     },
     logout : function(){
       this.$store.dispatch('logout')

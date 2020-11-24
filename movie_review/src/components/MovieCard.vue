@@ -8,16 +8,16 @@
     </div>
     <div class="flip-card-back">
       
-      <title><span>{{ movie.movieNm }}☆☆☆☆☆</span></title>
+      <title><span>{{ movie.movieNm }}</span></title>
       <div>
         <p>개요</p><span> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
         <p>개봉</p><span> {{movie.movieCd}} | ☆☆☆☆☆</span>
       </div>
-      <b-button id="show-btn"  @click="$bvModal.show(`bv-modal-example${idx}`), searchMV(movie.movieNm), getReview(movie.movieCd)">show detail</b-button>
+      <b-button id="show-btn"  @click="$bvModal.show(`bv-modal-example${idx}`), searchMV(movie.movieNm), getMovieScore(movie.movieCd), getReview(movie.movieCd)">show detail</b-button>
 
         <b-modal :id="'bv-modal-example'+idx" hide-footer>
             <template #modal-title style="text-align : center">
-            {{ movie.movieNm }}
+            <span>{{ movie.movieNm }} | {{stars[0]}} {{stars[1]}}</span>
             </template>
             <div class="d-block">
               <div id='modalContent'>
@@ -31,23 +31,23 @@
                   <p>개봉</p><span> {{movie.prtdYear}}</span>
                 <div>
                   <b-button-group>
-                    <b-button variant="outline-warning">
+                    <b-button @click='scoreSelect(movie.movieCd,1)' variant="outline-warning">
                       <b-icon icon="emoji-angry"></b-icon>
                       <p>최악이에요!</p>
                     </b-button>
-                    <b-button variant="outline-warning">
+                    <b-button @click='scoreSelect(movie.movieCd,2)' variant="outline-warning">
                       <b-icon icon="emoji-frown"></b-icon>
                       <p>그저 그래요</p>
                     </b-button>
-                    <b-button variant="outline-warning">
+                    <b-button @click='scoreSelect(movie.movieCd,3)' variant="outline-warning">
                       <b-icon icon="emoji-neutral"></b-icon>
                       <p>볼만해요</p>
                     </b-button>
-                    <b-button variant="outline-warning">
+                    <b-button @click='scoreSelect(movie.movieCd,4)' variant="outline-warning">
                       <b-icon icon="emoji-smile"></b-icon>
                       <p>재밌어요</p>
                     </b-button>
-                    <b-button variant="outline-warning">
+                    <b-button @click='scoreSelect(movie.movieCd,5)' variant="outline-warning">
                       <b-icon icon="emoji-heart-eyes"></b-icon>
                       <p>최고에요!</p>
                     </b-button>
@@ -59,7 +59,7 @@
                 </div>
                 <ul>
                   <li
-                    v-for="(person, idx) in people"
+                    v-for="(person, idx) in movie.peoples"
                     :key="idx"
                     :person='person'
                   >
@@ -74,26 +74,24 @@
                 </div>
                 <div>
                   <p>영화 리뷰</p>
-                  <form action="">
-                    <textarea name="" id="" cols="30" rows="4"></textarea>
-                    <button>리뷰쓰기</button>
+                  <form @submit.prevent='makeReview(movie.movieCd)' action="#">
+                    <input v-model.trim="reviewTitle" type="text">
+                    <textarea v-model.trim="reviewContent" id="" cols="30" rows="4"></textarea>
+                    <button @click='makeReview(movie.movieCd)' type="submit">리뷰쓰기</button>
                   </form>
                 </div>
                 <div>
-                  <ul v-if="reviews">
+                  <ul>
                     <li
                       v-for=" (review,idx) in reviews"
                       :key='idx'
                       :review='review'
                     >
-                      <p>글쓴이 : {{review.id | getReviewUser(review.id)}}</p>
+                      <p>작성자 : {{review.user.username}}</p>
                       <p>제목 : {{review.title}}</p>
                       <p>내용: {{review.content}}</p>
                     </li>
                   </ul>
-                  <div v-if="!reviews">
-                    <p>작성된 리뷰가 없습니다.</p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -107,9 +105,10 @@
 
 <script>
 import axios from 'axios'
+import VueJwtDecode from 'vue-jwt-decode'
 const GOOGLE_API ='https://www.googleapis.com/youtube/v3/search'
-// const API_KEY = process.env.VUE_APP_API_KEY
-const API_KEY = 'AIzaSyDMOGwcTZCpGOR3-N1uBqTj6v1K8J9fy7U'
+const SERVER_URL = process.env.VUE_APP_SERVER_URL
+const API_KEY = process.env.VUE_APP_API_KEY
 import {mapState} from 'vuex'
 
 export default {
@@ -120,22 +119,27 @@ export default {
         mvUrl:'',
         thumbnail :'',
         reviews:[],
+        score :[],
+        reviewTitle:'',
+        reviewContent : '',
       }
   },
   computed:{
-    ...mapState([
-      'crew',
-      'score',
-      'users',
-
-    ]),
-    people : function(){
-      return this.crew.filter((obj)=>{
-        return obj.movies.includes(this.movie.movieCd)
-      })
-    },
-    rating : function(){
-      return this.score.filter()
+    ...mapState({
+      crew : 'crew',
+      users : 'users',
+    }),
+    stars : function(){
+      if(!this.score.length){
+        return [0.00, '☆'.repeat(5)]
+      }else{
+        const n = Object.keys(this.score).length
+        let stack =0
+        this.score.forEach(function(sc){stack+=sc.score})
+        const value = parseFloat(stack/n).toFixed(2)
+        const value2 = Math.floor(value)
+        return [value,'★'.repeat(value2) + '☆'.repeat(5-value2)]
+      }
     },
   },
   props: {
@@ -147,28 +151,43 @@ export default {
     },
   },
   methods :{
-      searchMV : function(title){
-        axios.get(GOOGLE_API, {
-        params:{
-          key : API_KEY,
-          part : 'snippet',
-          type : 'video',
-          q : `영화+${title}+예고`,
+    setToken: function () {
+      const token = localStorage.getItem('jwt')
+
+      const config = {
+        headers: {
+          Authorization: `JWT ${token}`
         }
+      }
+      return config
+    },
+    getUsername : function(){
+      const token = localStorage.getItem('jwt')
+      const user = VueJwtDecode.decode(token)
+      return user.username
+    },
+    searchMV : function(title){
+      axios.get(GOOGLE_API, {
+      params:{
+        key : API_KEY,
+        part : 'snippet',
+        type : 'video',
+        q : `영화+${title}+예고`,
+      }
+    })
+      .then( res => {
+        const mvWord = res.data.items[0].id.videoId
+        this.mvUrl = `https://www.youtube.com/embed/${mvWord}`
       })
-        .then( res => {
-          const mvWord = res.data.items[0].id.videoId
-          this.mvUrl = `https://www.youtube.com/embed/${mvWord}`
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      .catch(err => {
+        console.log(err)
+      })
     },
     getReview : function(code){
-      axios.get(`http://127.0.0.1:8000/movies/${code}/review_list_create/`)
+      axios.get(`${SERVER_URL}/movies/${code}/review_list_create/`)
         .then((res) => {
           if(res.data=== []){
-            this.reviews =false
+            this.reviews =[]
           }else{
             this.reviews = res.data
           }
@@ -177,21 +196,67 @@ export default {
           console.log(err)
         })        
     },
+    getMovieScore :function(code){
+      axios.get(`${SERVER_URL}/movies/${code}/movie_score_list_create/`)
+        .then((res) => {
+          const movieScore = res.data
+          this.score = movieScore
+        })
+        .catch((err)=>{
+          console.log(err)
+        })      
+    },
+    scoreSelect : function(code, score){
+      const user =this.getUsername()
+      let can = false
+      this.score.forEach((obj)=>{
+        if(obj.user===user){
+          can = false
+        }else{
+          can = true
+        }
+      })
+      if(can){
+        const config = this.setToken()
+        const item = {
+          movie: code,
+          score : score,
+          user : user
+        }
+        axios.post(`${SERVER_URL}/movies/${code}/movie_score_list_create/`,item,config)
+          .then(() => {
+            this.score.push(item)
+          })
+          .catch((err)=>{
+            console.log(err)
+          })            
+      }
+    },
+    makeReview : function(code){
+      const config = this.setToken()
+      // VueJwtDecode.decode(localStorage.getItem('jwt'))
+      // const user =this.getUsername()
+      const item = {
+        movie: code,
+        title : this.reviewTitle,
+        content : this.reviewContent,
+      }
+      axios.post(`${SERVER_URL}/movies/${code}/review_list_create/`,item,config)
+        .then(() => {
+          this.reviews = this.reviews.push(item)
+          this.reviewContent=''
+          this.reviewTitle=''
+        })
+        .catch((err)=>{
+          console.log(err)
+        })            
+      
+    },
   },
   created : function(){
     this.$emit('getImgUrl',this.movie.posterSrc)
     this.$emit('getCrew',this.movie.movieCd)
   },
-  filters : {
-    getReviewUser : function(id){
-      this.users.forEach((user)=>{
-        if(user.id===id){
-          return user.username
-        }
-      })
-    }
-  }
-
 };
 </script>
 
@@ -266,9 +331,7 @@ export default {
   display: flexbox;
   width: 100%;
 }
-#modalContent>div img{
-  /* width: %; */
-}
+
 b-modal{
   width: 80vw;
 }

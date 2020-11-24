@@ -1,22 +1,29 @@
 <template>
   <div id="app">
 
-    <router-view />
+    <router-view @login='login=true' />
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'App',
   data: function() {
     return {
+      login : false,
+      
     }
   },
+
   created: function() {
     this.$store.dispatch('getMovies')
-    this.$store.dispatch('getMovieScore')
     this.$store.dispatch('getMovieCrew')
     this.$store.dispatch('getUser')
+    const token = localStorage.getItem('jwt')
+    if(token){
+      this.login = true
+    }
   },
 }
 </script>

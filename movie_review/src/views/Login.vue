@@ -30,7 +30,9 @@
           </b-form-group>
         </div>
         <div>
+          <b-form-group class="mb-0" label="PASSWORD" label-for="input-lazy">
           <b-button @click="login" variant="primary" class="col-12">Login</b-button>
+          </b-form-group>
         </div>
         <div class="pt-0">
           <router-link :to="{ name: 'Signup' }">Not Enrolled? Sign Up Now.</router-link>
@@ -62,15 +64,14 @@ export default {
   },
   methods: {
     login: function() {
-      this.$router.push({ name: "Main" });
       axios.post(`${SERVER_URL}/accounts/api-token-auth/`,this.credentials)
           .then((res)=>{
-              localStorage.setItem('jwt',res.data.token)
-              this.$store.dispatch('login')
-              this.$router.push({name:'Main'})
+            localStorage.setItem('jwt',res.data.token)
+            this.$emit('login')
+            this.$router.push({name:'Main'})
           })
           .catch((err)=>{
-              console.log(err)
+            console.log(err)
           })
     },
   },
