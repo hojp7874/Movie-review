@@ -79,4 +79,13 @@ class People(models.Model):
 class UserMovieScore(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    score = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+
+# 댓글
+class Comment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+    title = models.CharField(max_length=50)
+    content = models.TextField()
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_comments')

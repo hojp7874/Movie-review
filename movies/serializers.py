@@ -1,9 +1,17 @@
 from rest_framework import serializers
-from .models import Movie, Review, People, UserMovieScore
+from .models import Movie, Review, People, UserMovieScore, Comment
 
 
+class PeopleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = People
+        fields = ["name", "role", "photo"]
+
+    
 class MovieSerializer(serializers.ModelSerializer):
-    peoples = serializers.PrimaryKeyRelatedField(queryset=People.objects.all(), many=True)
+    peoples = PeopleSerializer(many=True, read_only=True)
+    # peoples = serializers.PrimaryKeyRelatedField(queryset=People.objects.all(), many=True)
 
     class Meta:
         model = Movie
@@ -17,16 +25,15 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ["id", "movie", "title", "content", "user"]
 
 
-class PeopleSerializer(serializers.ModelSerializer):
-    movies = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all(), many=True)
-
-    class Meta:
-        model = People
-        fields = ["name", "role", "photo", "movies"]
-
-    
 class UserMovieScoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserMovieScore
         fields = "__all__"
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ["id", "review", "title", "content", "user"]

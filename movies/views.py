@@ -18,8 +18,8 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import MovieSerializer, ReviewSerializer, PeopleSerializer, UserMovieScoreSerializer
-from .models import Movie, Review, People, UserMovieScore
+from .serializers import MovieSerializer, ReviewSerializer, PeopleSerializer, UserMovieScoreSerializer, CommentSerializer
+from .models import Movie, Review, People, UserMovieScore, Comment
 
 
 
@@ -32,7 +32,7 @@ def movie_list_create(request):
         return Response(serializer.data)
     else:
         # 영화 data 만들기
-        for curPage in range(5, 6):
+        for curPage in range(102, 103):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -183,3 +183,16 @@ def review_like(request, review_pk):
     return Response({'리뷰 좋아요가 완료되었습니다.'})
 
 
+# 코멘트 보기, 쓰기
+@api_view(['GET', 'POST'])
+def comment_list_create(request, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    if request.method == 'GET':
+        comments = Comment.objects.filter(review=review)
+        serializer = ReviewSerializer(comments, many=True)
+        return Response(serializer.data)
+    else:
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
