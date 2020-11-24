@@ -3,21 +3,13 @@
     <div>
       <h2>화제의 영화</h2>
     </div>
-<<<<<<< HEAD
       <carousel-3d
-=======
-    <div id="caru">
-
-      <b-carousel
-        id="carousel-1"
->>>>>>> c8c28153cb4be6e2da70931c70d25e0510ec2027
         v-model="slide"
         :autoplay="true"
         :autoplay-timeout="2500"
         class="col-12"
         :height='400'
       >
-<<<<<<< HEAD
         <slide
           v-for="(movie,idx) in movies"
           :key="idx" 
@@ -31,29 +23,6 @@
           />
         </slide>
       </carousel-3d>
-=======
-        <p>inner b-carousel</p>
-
-
-        <b-carousel-slide
-          v-for="(movie,idx) in movies"
-          :key="idx"
-        > 
-          <!-- <template v-slot:img> -->
-          <div style="height: 30vh">
-            <MovieCard
-              v-for="(movie,idx) in movies"
-              :key="idx"
-              :movie='movie'
-              :idx='idx'
-            />
-          </div>
-          <!-- </template> -->
-        </b-carousel-slide>
-
-      </b-carousel>
-    </div>
->>>>>>> c8c28153cb4be6e2da70931c70d25e0510ec2027
   </div>
 </template>
 
@@ -115,7 +84,6 @@ h2 {
 
 div.carousel-3d-slide{
   border-radius: 0.5rem;
-  height: 50vh;
 }
 
 .carousel-indicators {
