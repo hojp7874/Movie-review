@@ -22,7 +22,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ["id", "movie", "title", "content", "user"]
+        fields = ["id", "movie", "title", "content"]
 
 
 class UserMovieScoreSerializer(serializers.ModelSerializer):
@@ -36,4 +36,4 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ["id", "review", "title", "content", "user"]
+        fields = ["id", "review", "content"]

@@ -13,7 +13,7 @@ class Movie(models.Model):
     movieNmEn = models.CharField(max_length=100, blank=True)
 
     # 제작년도
-    prdtYear = models.CharField(max_length=10)
+    prdtYear = models.CharField(max_length=10, blank=True)
 
     # 개봉일
     openDt = models.CharField(max_length=10, blank=True)
@@ -86,6 +86,5 @@ class UserMovieScore(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
-    title = models.CharField(max_length=50)
     content = models.TextField()
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_comments')
