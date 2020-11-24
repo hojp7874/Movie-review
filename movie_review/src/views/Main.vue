@@ -26,6 +26,9 @@ export default {
       ...mapState([
           'movies',
       ])
+  },
+  updated : function(){
+    console.log(localStorage.getItem('jwt'))
   }
 }
 </script>

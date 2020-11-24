@@ -184,7 +184,7 @@ export default {
       })
     },
     getReview : function(code){
-      axios.get(`${SERVER_URL}/movies/${code}/review_list_create/`)
+      axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
         .then((res) => {
           if(res.data=== []){
             this.reviews =[]
@@ -197,7 +197,7 @@ export default {
         })        
     },
     getMovieScore :function(code){
-      axios.get(`${SERVER_URL}/movies/${code}/movie_score_list_create/`)
+      axios.get(`${SERVER_URL}/movies/${code}/movie_score_list/`)
         .then((res) => {
           const movieScore = res.data
           this.score = movieScore
@@ -207,10 +207,10 @@ export default {
         })      
     },
     scoreSelect : function(code, score){
-      const user =this.getUsername()
+      const user2 =this.getUsername()
       let can = false
       this.score.forEach((obj)=>{
-        if(obj.user===user){
+        if(obj.user===user2){
           can = false
         }else{
           can = true
@@ -221,29 +221,33 @@ export default {
         const item = {
           movie: code,
           score : score,
-          user : user
+          user : user2
         }
-        axios.post(`${SERVER_URL}/movies/${code}/movie_score_list_create/`,item,config)
+        axios.post(`${SERVER_URL}/movies/movie_score_create/`,item,config)
           .then(() => {
             this.score.push(item)
           })
           .catch((err)=>{
             console.log(err)
           })            
+      }else{
+        return
       }
     },
     makeReview : function(code){
       const config = this.setToken()
       // VueJwtDecode.decode(localStorage.getItem('jwt'))
-      // const user =this.getUsername()
+      const user2 =this.getUsername()
       const item = {
         movie: code,
         title : this.reviewTitle,
         content : this.reviewContent,
+        user : {username : user2}
+
       }
-      axios.post(`${SERVER_URL}/movies/${code}/review_list_create/`,item,config)
+      axios.post(`${SERVER_URL}/movies/review_create/`,item,config)
         .then(() => {
-          this.reviews = this.reviews.push(item)
+          this.reviews.push(item)
           this.reviewContent=''
           this.reviewTitle=''
         })
