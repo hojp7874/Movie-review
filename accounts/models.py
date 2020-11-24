@@ -3,4 +3,4 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    pass
+    username = models.CharField(primary_key=True, max_length=50)

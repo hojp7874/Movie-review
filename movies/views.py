@@ -32,7 +32,7 @@ def movie_list_create(request):
         return Response(serializer.data)
     else:
         # 영화 data 만들기
-        for curPage in range(102, 103):
+        for curPage in range(100, 101):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -137,7 +137,7 @@ def people_list(request):
     return Response(serializer.data)
 
 
-# 리뷰 보기, 쓰기
+# 리뷰 CR
 @api_view(['GET', 'POST'])
 def review_list_create(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
@@ -153,6 +153,7 @@ def review_list_create(request, movie_pk):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+# 리뷰 UD
 @api_view(['PUT', 'DELETE'])
 # @authentication_classes([JSONWebTokenAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -183,16 +184,36 @@ def review_like(request, review_pk):
     return Response({'리뷰 좋아요가 완료되었습니다.'})
 
 
-# 코멘트 보기, 쓰기
+# 코멘트 CR
 @api_view(['GET', 'POST'])
 def comment_list_create(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     if request.method == 'GET':
         comments = Comment.objects.filter(review=review)
-        serializer = ReviewSerializer(comments, many=True)
+        serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
     else:
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# 코멘트 UD
+@api_view(['PUT', 'DELETE'])
+# @authentication_classes([JSONWebTokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def comment_update_delete(request, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk)
+
+    if not request.user.comments.filter(pk=comment_pk).exists():
+        return Response({'detail': '권한이 없습니다.'})
+
+    if request.method == 'PUT':
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+    else:
+        comment.delete()
+        return Response({ 'delete id': comment_pk })

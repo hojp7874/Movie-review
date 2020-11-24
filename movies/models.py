@@ -19,7 +19,7 @@ class Movie(models.Model):
     openDt = models.CharField(max_length=10, blank=True)
 
     # 장편/단편
-    typeNm = models.CharField(max_length=10)
+    typeNm = models.CharField(max_length=10, blank=True)
 
     # 개봉여부
     prdtStatNm = models.CharField(max_length=10, blank=True)
@@ -28,13 +28,13 @@ class Movie(models.Model):
     nationAlt = models.CharField(max_length=30, blank=True)
 
     # 장르
-    genreAlt = models.CharField(max_length=30)
+    genreAlt = models.CharField(max_length=30, blank=True)
     
     # 대표제작국가
     repNationNm = models.CharField(max_length=10, blank=True)
     
     # 대표장르
-    repGenreNm = models.CharField(max_length=10)
+    repGenreNm = models.CharField(max_length=10, blank=True)
     
     # 감독
     # directors = models.CharField(max_length=50, blank=True)
