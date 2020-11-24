@@ -19,11 +19,13 @@
                 size="sm"
                 class="mr-sm-2"
                 placeholder="검색어를 입력하세요"
-                ></b-form-input>
+                @keypress.enter="search"
+              >
+              </b-form-input>
                 <!-- <ul v-show="searchWord.length">
                   <li v-for="(wd,idx) in candidate" :key='idx'></li>
                 </ul> -->
-              <b-button size="sm" class="my-2 my-sm-0" type="submit">🔍</b-button>
+              <b-button size="sm" class="my-2 my-sm-0" @click="search">🔍</b-button>
           </b-nav-form>
 
           <b-nav-item-dropdown right>
@@ -75,6 +77,9 @@ export default {
     },
     logout : function(){
       this.$store.dispatch('logout')
+    },
+    search: function() {
+      this.$store.dispatch('search', this.searchWord)
     },
   },
 };

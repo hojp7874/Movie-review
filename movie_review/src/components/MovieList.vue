@@ -5,7 +5,7 @@
     </div>
     <div class="flip-card-container p-0 col-12">
       <MovieCard
-        v-for="(movie,idx) in movies"
+        v-for="(movie,idx) in search"
         :key="idx"
         :movie='movie'
         :idx='idx'
@@ -35,7 +35,8 @@ export default {
     ...mapState([
       'movies',
       'score',
-      'crew'
+      'crew',
+      'search',
     ])
   },
 
