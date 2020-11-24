@@ -11,7 +11,7 @@ export default new Vuex.Store({
     movies:[],
     crew:[],
     users:[],
-
+    loginStatus : false,
   },
   getters: {
     movieList:function(){
@@ -24,11 +24,9 @@ export default new Vuex.Store({
     GET_MOVIES: function (state, movieData) {
       state.movies = movieData
     },
-
-    LOGOUT : function(){
+    LOGOUT : function(state){
       localStorage.removeItem('jwt')
-      this.loginStatus = !this.loginStatus
-      this.$router.go({name: 'Home'})      
+      state.loginStatus=false
     },
     GET_MOVIE_CREW : function(state, movieCrew){
       state.crew = movieCrew

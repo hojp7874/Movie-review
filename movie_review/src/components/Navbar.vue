@@ -31,10 +31,10 @@
             <template #button-content>
               <em class="whitefont">마이페이지</em>
             </template>
-            <b-dropdown-item v-show="loginStatus" href="#">내 활동</b-dropdown-item>
-            <b-dropdown-item v-show="loginStatus" @click='logout'>로그아웃</b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="logined" href="#">내 활동</b-dropdown-item>
+            <b-dropdown-item v-show="logined" @click='logout'>로그아웃</b-dropdown-item>
+            <b-dropdown-item v-show="!logined" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="!logined" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -50,8 +50,7 @@ export default {
   data:function(){
     return{
       searchWord : '',
-      // movieList:[],
-      // loginStatus:'',
+      logined : false
     }
   },
   components : {
@@ -75,8 +74,15 @@ export default {
     },
     logout : function(){
       this.$store.dispatch('logout')
+      this.$router.push({name:'Home'})
     },
   },
+  mounted : function(){
+      if(localStorage.getItem('jwt')){
+        this.logined=true
+      }
+    }
+  
 };
 </script>
 

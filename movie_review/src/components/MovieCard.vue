@@ -11,7 +11,14 @@
       <title><span>{{ movie.movieNm }}</span></title>
       <div>
         <p>개요</p><span> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
-        <p>개봉</p><span> {{movie.movieCd}} | ☆☆☆☆☆</span>
+        <p>개봉</p><span> {{movie.movieCd}} | {{stars[1]}}</span>
+        <p>{{score.length}}개의 점수 평가</p>
+        <p>{{Object.keys(reviews).length}}개의 리뷰</p>
+        <b-icon icon="emoji-angry" style="color : red"></b-icon>
+        <b-icon icon="emoji-frown" style="color : red"></b-icon>
+        <b-icon icon="emoji-neutral" style="color : red"></b-icon>
+        <b-icon icon="emoji-smile" style="color : red"></b-icon>
+        <b-icon icon="emoji-heart-eyes" style="color : red"></b-icon>
       </div>
       <b-button id="show-btn"  @click="$bvModal.show(`bv-modal-example${idx}`), searchMV(movie.movieNm), getMovieScore(movie.movieCd), getReview(movie.movieCd)">show detail</b-button>
 
@@ -64,7 +71,8 @@
                     :person='person'
                   >
                     <div><span>{{person.role}} : </span><span>{{person.name}}</span></div>
-                    <img :src="person.photo" alt="">
+                    <img v-if="person.photo!=='이미지 없음'" :src="person.photo" alt="">
+                    <img v-else src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
                   </li>
                 </ul>
                 </div>
@@ -122,6 +130,12 @@ export default {
         score :[],
         reviewTitle:'',
         reviewContent : '',
+        btn1:false,
+        btn2:false,
+        btn3:false,
+        btn4:false,
+        btn5:false,
+        nowbtn : 6,
       }
   },
   computed:{
@@ -141,6 +155,14 @@ export default {
         return [value,'★'.repeat(value2) + '☆'.repeat(5-value2)]
       }
     },
+    // userScore : function(){
+    //   const userSet = this.score.map(a=>a.user)
+    //   const nowUser =this.getUsername()
+    //   const userIdx = userSet.indexOf(nowUser)
+    //   if(userIdx!==-1){
+    //     return this.nowbtn = this.score[userIdx].score
+    //   }
+    // }
   },
   props: {
     movie: {
@@ -153,7 +175,6 @@ export default {
   methods :{
     setToken: function () {
       const token = localStorage.getItem('jwt')
-
       const config = {
         headers: {
           Authorization: `JWT ${token}`
@@ -206,35 +227,66 @@ export default {
           console.log(err)
         })      
     },
-    scoreSelect : function(code, score){
-      const user2 =this.getUsername()
-      let can = false
-      this.score.forEach((obj)=>{
-        if(obj.user===user2){
-          can = false
-        }else{
-          can = true
+    scoreSelect : function(code, newScore){
+      //비로그인
+      if(!localStorage.getItem('jwt')){
+        const ans = confirm('영화 평점을 남기려면 로그인 해주세요.')
+        if(ans){
+          this.$router.push({name:'Login'})
         }
-      })
-      if(can){
+      //로그인
+      }else{
+        const user2 =this.getUsername()
         const config = this.setToken()
+        let scoreList = this.score.map(a=>a.score)
+        let userList = this.score.map(a=>a.user)
         const item = {
           movie: code,
-          score : score,
+          score : newScore,
           user : user2
         }
-        axios.post(`${SERVER_URL}/movies/movie_score_create/`,item,config)
-          .then(() => {
-            this.score.push(item)
-          })
-          .catch((err)=>{
-            console.log(err)
-          })            
-      }else{
-        return
+        
+        const scoreIdx = userList.indexOf(user2)
+        if(scoreIdx !=-1){
+          //리뷰가 있으면
+          if(scoreList[scoreIdx] === newScore){
+            // 기존의 점수와 같으면 -> DELETE
+            axios.delete(`${SERVER_URL}/movies/${code}/movie_score_update_delete/`,{headers : {Authorization: this.setToken().headers.Authorization},data : {movie : code, score : scoreList[scoreIdx], user: user2}})
+              .then(() => {
+                this.score.splice(scoreIdx,1)
+              })
+              .catch((err)=>{
+                console.log(err)
+              })
+          }else{
+            // 다르면 put
+            axios.patch(`${SERVER_URL}/movies/${code}/movie_score_update_delete/`,{data : {score : newScore}},config)
+              .then(() => {
+                this.score[scoreIdx].score = item.score
+              })
+              .catch((err)=>{
+                console.log(err)
+              })
+          }
+        //POST
+        }else{
+          axios.post(`${SERVER_URL}/movies/movie_score_create/`,item,config)
+            .then(() => {
+              this.score.push(item)
+            })
+            .catch((err)=>{
+              console.log(err)
+            })
+        }
       }
     },
     makeReview : function(code){
+      if(!localStorage.getItem('jwt')){
+        const ans = confirm('영화에 대한 리뷰를 남기려면 로그인 해주세요.')
+        if(ans){
+          this.$router.push({name:'Login'})
+        }
+      }
       const config = this.setToken()
       // VueJwtDecode.decode(localStorage.getItem('jwt'))
       const user2 =this.getUsername()
