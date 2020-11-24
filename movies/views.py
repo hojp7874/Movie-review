@@ -126,11 +126,12 @@ def movie_score_create(request):
 
 # 불러오기
 @api_view(['GET'])
-def movie_score_list_create(request, movie_pk):
+def movie_score_list(request, movie_pk):
     if request.method == 'GET':
         scores = UserMovieScore.objects.filter(movie=movie_pk)
         serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
+
 
 
 # 영화인 불러오기, 만들기
@@ -185,6 +186,8 @@ def review_update_delete(request, review_pk):
 
 # 리뷰 좋아요
 @api_view(['POST'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 def review_like(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     if review.like_users.filter(pk=request.user.pk).exists():
