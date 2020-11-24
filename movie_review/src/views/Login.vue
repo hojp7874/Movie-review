@@ -30,7 +30,7 @@
           </b-form-group>
         </div>
         <div>
-          <b-form-group class="mb-0" label="PASSWORD" label-for="input-lazy">
+          <b-form-group class="mb-0" label-for="input-lazy">
           <b-button @click="login" variant="primary" class="col-12">Login</b-button>
           </b-form-group>
         </div>
