@@ -86,7 +86,7 @@
                       :key='idx'
                       :review='review'
                     >
-                      <p>글쓴이 : {{review.id | getUserId(review.id)}}</p>
+                      <p>글쓴이 : {{review.id | getReviewUser(review.id)}}</p>
                       <p>제목 : {{review.title}}</p>
                       <p>내용: {{review.content}}</p>
                     </li>
@@ -126,7 +126,8 @@ export default {
     ...mapState([
       'crew',
       'score',
-      'users'
+      'users',
+
     ]),
     people : function(){
       return this.crew.filter((obj)=>{
@@ -135,7 +136,7 @@ export default {
     },
     rating : function(){
       return this.score.filter()
-    }
+    },
   },
   props: {
     movie: {
@@ -181,6 +182,15 @@ export default {
     this.$emit('getImgUrl',this.movie.posterSrc)
     this.$emit('getCrew',this.movie.movieCd)
   },
+  filters : {
+    getReviewUser : function(id){
+      this.users.forEach((user)=>{
+        if(user.id===id){
+          return user.username
+        }
+      })
+    }
+  }
 
 };
 </script>
