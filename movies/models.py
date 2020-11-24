@@ -77,7 +77,7 @@ class People(models.Model):
 
 # 영화 평점
 class UserMovieScore(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='scores')
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 

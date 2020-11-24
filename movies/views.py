@@ -22,7 +22,6 @@ from .serializers import MovieSerializer, ReviewSerializer, PeopleSerializer, Us
 from .models import Movie, Review, People, UserMovieScore, Comment
 
 
-
 @api_view(['GET', 'POST'])
 def movie_list_create(request):
     # 영화 data 불러오기
@@ -32,7 +31,7 @@ def movie_list_create(request):
         return Response(serializer.data)
     else:
         # 영화 data 만들기
-        for curPage in range(100, 101):
+        for curPage in range(1, 3):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -132,6 +131,23 @@ def movie_score_list(request, movie_pk):
         serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
 
+
+# 영화평점 UD
+@api_view(['PUT', 'DELETE'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def movie_score_update_delete(request, movie_pk):
+    score = get_object_or_404(UserMovieScore, movie=movie_pk)
+
+    if request.method == 'PUT':
+        serializer = UserMovieScoreSerializer(score, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+    else:
+        print('###')
+        score.delete()
+        return Response({ '영화 평점이 삭제되었습니다' })
 
 
 # 영화인 불러오기, 만들기
