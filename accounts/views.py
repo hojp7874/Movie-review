@@ -43,7 +43,9 @@ def signup(request):
 
 @api_view(['PUT', 'DELETE'])
 def user_update_delete(request):
+    print('call')
     if request.method == 'PUT':
+        print('PUT')
         #1-1. Client에서 온 데이터를 받아서
         old_password = request.data.get('oldPassword')
             
@@ -65,4 +67,7 @@ def user_update_delete(request):
         # password는 직렬화 과정에는 포함 되지만 → 표현(response)할 때는 나타나지 않는다.
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
-        pass
+        print('DELETE')
+        user = User.objects.get(pk=request.user)
+        user.delete()
+        return Response({'delete id': 'ss'})

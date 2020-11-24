@@ -148,7 +148,6 @@ def review_list_create(request, movie_pk):
     else:
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            print(request.user)
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 

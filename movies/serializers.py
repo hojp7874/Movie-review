@@ -1,3 +1,4 @@
+from accounts.serializers import UserSerializer
 from rest_framework import serializers
 from .models import Movie, Review, People, UserMovieScore, Comment
 
@@ -19,10 +20,11 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Review
-        fields = ["id", "movie", "title", "content"]
+        fields = ["id", "user", "movie", "title", "content"]
 
 
 class UserMovieScoreSerializer(serializers.ModelSerializer):
