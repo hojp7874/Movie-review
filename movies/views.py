@@ -111,21 +111,26 @@ def movie_list_create(request):
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
+      
 # 영화 평점 불러오기, 만들기
-@api_view(['GET', 'POST'])
+# 만들기
+@api_view(['POST'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def movie_score_create(request):
+    serializer = UserMovieScoreSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(serializer.data)
+
+
+# 불러오기
+@api_view(['GET'])
 def movie_score_list_create(request, movie_pk):
-    # 불러오기
     if request.method == 'GET':
         scores = UserMovieScore.objects.filter(movie=movie_pk)
         serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
-    else:
-        # 만들기
-        serializer = UserMovieScoreSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
 
 
 # 영화인 불러오기, 만들기
@@ -189,15 +194,6 @@ def review_like(request, review_pk):
     return Response({'리뷰 좋아요가 완료되었습니다.'})
 
 
-# 코멘트 R
-@api_view(['GET'])
-def comment_list(request, review_pk):
-    review = get_object_or_404(Review, pk=review_pk)
-    comments = Comment.objects.filter(review=review)
-    serializer = CommentSerializer(comments, many=True)
-    return Response(serializer.data)
-
-
 # 코멘트 C
 @api_view(['POST'])
 @authentication_classes([JSONWebTokenAuthentication])
@@ -207,6 +203,15 @@ def comment_create(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# 코멘트 R
+@api_view(['GET'])
+def comment_list(request, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    comments = Comment.objects.filter(review=review)
+    serializer = CommentSerializer(comments, many=True)
+    return Response(serializer.data)
 
 
 # 코멘트 UD
