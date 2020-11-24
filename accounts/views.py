@@ -70,4 +70,4 @@ def user_update_delete(request):
         print('DELETE')
         user = User.objects.get(pk=request.user)
         user.delete()
-        return Response({'delete id': 'ss'})
+        return Response({'id가 삭제되었습니다'})
