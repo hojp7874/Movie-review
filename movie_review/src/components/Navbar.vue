@@ -14,8 +14,9 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
+              <!-- :data="moviesNm" -->
             <vue-bootstrap-typeahead
-              :data="moviesNm"
+              :data="searchNm"
               v-model="searchWord"
               size="sm"
               class="mr-sm-2"
@@ -59,10 +60,11 @@ export default {
   components : {
     VueBootstrapTypeahead
   },
-    computed : {
+  computed : {
     ...mapState([
       'loginStatus',
       'moviesNm',
+      'crewsNm',
     ]),
     ...mapGetters([
       'movieList'
@@ -71,6 +73,9 @@ export default {
       return this.$store.getters.movieList.filter(function(movie){
         return (movie.indexOf(this.searchWord) !== -1)
       })
+    },
+    searchNm: function () {
+      return this.moviesNm.concat(this.crewsNm)
     }
   },
   methods: {
