@@ -45,7 +45,6 @@ export default {
 
 <style scoped>
 #MovieList {
-  background-color: #323437;
   width: 100vw;
   height: 150vh;
 }

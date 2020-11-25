@@ -76,7 +76,8 @@ export default {
 h2 {
   color: white;
   text-align: center;
-  text-decoration-line: underline;
+  font-weight: 700;
+  font-size: 3rem;
 }
 #caru {
   margin: 3% 0;

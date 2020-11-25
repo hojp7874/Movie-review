@@ -7,8 +7,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#">영화 목록</b-nav-item>
-          <b-nav-item href="#">리뷰 목록</b-nav-item>
+          <b-nav-item href="#"><router-link :to="{ name: 'Allmovielist' }">영화 목록</router-link></b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -42,6 +41,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    <router-view  />
   </div>
 </template>
 
@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     toMain: function() {
-      this.$router.go({ name: "Main" });
+      this.$router.push({ name: "Main" });
     },
     logout : function(){
       this.$store.dispatch('logout')
@@ -88,6 +88,7 @@ export default {
     },
     search: function() {
       this.$store.dispatch('search', this.searchWord)
+      this.$router.push({name : 'Allmovielist'})
     },
   },
   mounted : function(){

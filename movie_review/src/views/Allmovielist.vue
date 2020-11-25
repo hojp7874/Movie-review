@@ -1,8 +1,7 @@
 <template>
-  <div id='Main'>
+  <div id='Allmovielist'>
     <Navbar />
     <br>
-    <Recommended />
     <MovieList 
       :movies="movies"
     />
@@ -10,31 +9,26 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Navbar from '@/components/Navbar.vue'
-import Recommended from '@/components/Recommended.vue'
 import MovieList from '@/components/MovieList.vue'
+import { mapState } from 'vuex'
+
 
 export default {
-  name: 'Main',
-  components: {
+  name : 'Allmovielist',
+  components : {
     Navbar,
-    Recommended,
     MovieList
   },
-  computed: {
+  computed : {
       ...mapState([
           'movies',
           'search',
       ]),
-  },
-  updated : function(){
-    console.log(localStorage.getItem('jwt'))
   }
 }
 </script>
 
 <style>
-
 
 </style>

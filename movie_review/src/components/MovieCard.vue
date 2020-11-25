@@ -1,6 +1,6 @@
 <template>
   <div id="MovieCard" class='col-2'>
-    <div class="flip-card" :movie='movie' :idx='idx'>
+    <div class="flip-card" :movie='movie' >
     <div class="flip-card-front">
       <!-- <img :src="imgSrc" alt="" /> -->
       <img v-if="!movie.posterSrc" src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
@@ -14,15 +14,15 @@
         <p>개봉</p><span> {{movie.movieCd}} | {{stars[1]}}</span>
         <p>{{score.length}}개의 점수 평가</p>
         <p>{{Object.keys(reviews).length}}개의 리뷰</p>
-        <b-icon icon="emoji-angry" style="color : red"></b-icon>
-        <b-icon icon="emoji-frown" style="color : red"></b-icon>
-        <b-icon icon="emoji-neutral" style="color : red"></b-icon>
-        <b-icon icon="emoji-smile" style="color : red"></b-icon>
-        <b-icon icon="emoji-heart-eyes" style="color : red"></b-icon>
+        
+        <p><b-icon icon="emoji-angry" style="color : red"></b-icon> : {{stars[2]}}</p>
+        <p><b-icon icon="emoji-frown" style="color : red"></b-icon> : {{stars[3]}}</p>
+        <p><b-icon icon="emoji-neutral" style="color : red"></b-icon> : {{stars[4]}}</p>
+        <p><b-icon icon="emoji-smile" style="color : red"></b-icon> : {{stars[5]}}</p>
+        <p><b-icon icon="emoji-heart-eyes" style="color : red"></b-icon> :{{stars[6]}} </p>
       </div>
-      <b-button id="show-btn" @click="$bvModal.show(`bv-modal-${idx}`), searchMV(movie.movieNm), getMovieScore(movie.movieCd), getReview(movie.movieCd)">show detail</b-button>
-
-        <b-modal :id="'bv-modal-'+idx" hide-footer size='xl'>
+      <b-button id="show-btn" v-b-modal="`bv-modal-${movie.movieCd}`">show detail</b-button>
+        <b-modal :id="`bv-modal-${movie.movieCd}`" hide-footer size='xl'>
             <template #modal-title style="text-align : center">
             <span>{{ movie.movieNm }} | {{stars[0]}} {{stars[1]}}</span>
             </template>
@@ -106,9 +106,10 @@
                 </div>
               </div>
             </div>
-            <b-button class="mt-3" block @click="$bvModal.hide(`bv-modal-${idx}`)">닫기</b-button>
+            <b-button class="mt-3" block @click="$bvModal.hide(`bv-modal-${movie.movieCd}`)">닫기</b-button>
         </b-modal>
-
+      <div>
+      </div>
     </div>
   </div>
 </div>
@@ -152,9 +153,14 @@ export default {
         const n = Object.keys(this.score).length
         let stack =0
         this.score.forEach(function(sc){stack+=sc.score})
+        const list1 = this.score.filter((sc)=> sc.score===1).length
+        const list2 = this.score.filter((sc)=> sc.score===2).length
+        const list3 = this.score.filter((sc)=> sc.score===3).length
+        const list4 = this.score.filter((sc)=> sc.score===4).length
+        const list5 = this.score.filter((sc)=> sc.score===5).length
         const value = parseFloat(stack/n).toFixed(2)
         const value2 = Math.floor(value)
-        return [value,'★'.repeat(value2) + '☆'.repeat(5-value2)]
+        return [value,'★'.repeat(value2) + '☆'.repeat(5-value2), list1, list2, list3, list4, list5]
       }
     },
     nowUser : function(){
@@ -183,72 +189,6 @@ export default {
       const token = localStorage.getItem('jwt')
       const user = VueJwtDecode.decode(token)
       return user.username
-    },
-    searchMV : function(title){
-      axios.get(GOOGLE_API, {
-      params:{
-        key : API_KEY,
-        part : 'snippet',
-        type : 'video',
-        q : `영화+${title}+예고`,
-      }
-    })
-      .then( res => {
-        const mvWord = res.data.items[0].id.videoId
-        this.mvUrl = `https://www.youtube.com/embed/${mvWord}`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    },
-    getReview : function(code){
-      axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
-        .then((res) => {
-          if(res.data=== []){
-            this.reviews =[]
-          }else{
-            this.reviews = res.data
-          }
-        })
-        .catch((err)=>{
-          console.log(err)
-        })        
-    },
-    getMovieScore :function(code){
-      axios.get(`${SERVER_URL}/movies/${code}/movie_score_list/`)
-        .then((res) => {
-          const movieScore = res.data
-          this.score = movieScore
-          if(localStorage.getItem('jwt')){
-            const userSet = this.score.map(a=>a.user)
-            const nowUser =this.getUsername()
-            const userIdx = userSet.indexOf(nowUser)
-            if(userIdx!==-1){
-              switch(this.score[userIdx].score){
-                case 1 :
-                  this.btn1=true;
-                  break;
-                case 2 :
-                  this.btn2=true;
-                  break;
-                case 3 :
-                  this.btn3=true;
-                  break;
-                case 4 :
-                  this.btn4=true;
-                  break;
-                case 5 :
-                  this.btn5=true;
-                  break;
-                default :
-                  break;
-              }
-              }          
-          }
-        })
-        .catch((err)=>{
-          console.log(err)
-        })      
     },
     scoreSelect : function(code, newScore){
       //비로그인
@@ -397,6 +337,68 @@ export default {
   created : function(){
     this.$emit('getImgUrl',this.movie.posterSrc)
     this.$emit('getCrew',this.movie.movieCd)
+    const title = this.movie.title
+    axios.get(GOOGLE_API, {
+    params:{
+      key : API_KEY,
+      part : 'snippet',
+      type : 'video',
+      q : `영화+${title}+예고`,
+    }
+    })
+      .then( res => {
+        const mvWord = res.data.items[0].id.videoId
+        this.mvUrl = `https://www.youtube.com/embed/${mvWord}`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    const code=this.movie.movieCd
+    axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
+      .then((res) => {
+        if(res.data=== []){
+          this.reviews =[]
+        }else{
+          this.reviews = res.data
+        }
+      })
+      .catch((err)=>{
+        console.log(err)
+      })        
+    axios.get(`${SERVER_URL}/movies/${code}/movie_score_list/`)
+      .then((res) => {
+        const movieScore = res.data
+        this.score = movieScore
+        if(localStorage.getItem('jwt')){
+          const userSet = this.score.map(a=>a.user)
+          const nowUser =this.getUsername()
+          const userIdx = userSet.indexOf(nowUser)
+          if(userIdx!==-1){
+            switch(this.score[userIdx].score){
+              case 1 :
+                this.btn1=true;
+                break;
+              case 2 :
+                this.btn2=true;
+                break;
+              case 3 :
+                this.btn3=true;
+                break;
+              case 4 :
+                this.btn4=true;
+                break;
+              case 5 :
+                this.btn5=true;
+                break;
+              default :
+                break;
+            }
+            }          
+        }
+      })
+      .catch((err)=>{
+        console.log(err)
+      }) 
   },
 };
 </script>
