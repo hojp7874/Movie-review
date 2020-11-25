@@ -135,7 +135,7 @@ def movie_score_list(request, movie_pk):
 
 
 # 영화평점 UD
-@api_view(['PUT', 'DELETE'])
+@api_view(['PATCH', 'DELETE'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def movie_score_update_delete(request, movie_pk):
@@ -215,9 +215,10 @@ def review_like(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     if review.like_users.filter(pk=request.user.pk).exists():
         review.like_users.remove(request.user)
+        return Response({'리뷰 좋아요가 취소되었습니다.'})
     else:
         review.like_users.add(request.user)
-    return Response({'리뷰 좋아요가 완료되었습니다.'})
+        return Response({'리뷰 좋아요가 완료되었습니다.'})
 
 
 # 코멘트 C
