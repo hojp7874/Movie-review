@@ -12,6 +12,9 @@ export default new Vuex.Store({
     crew:[],
     users:[],
     loginStatus : false,
+    search:[],
+    moviesNm: [],
+
   },
   getters: {
     movieList:function(){
@@ -21,6 +24,9 @@ export default new Vuex.Store({
   mutations: {
     GET_MOVIES: function (state, movieData) {
       state.movies = movieData
+      state.search = movieData
+      state.moviesNm = movieData.map(a=>a.movieNm)
+      console.log(state.moviesNm)
     },
     LOGOUT : function(state){
       localStorage.removeItem('jwt')
@@ -32,6 +38,12 @@ export default new Vuex.Store({
     GET_USERS : function(state,data){
       state.users = data
     },
+    SEARCH: function (state, searchWord) {
+      state.search = state.movies.filter(function (data) {
+        return data.movieNm.includes(searchWord)
+      })
+      console.log(state.search)
+    }
     // GET_REVIEW : function(state,movieReview){
     //   state.reviews = movieReview
     // },
@@ -72,5 +84,8 @@ export default new Vuex.Store({
           console.log(err)
         })      
     },
+    search: function ({commit}, searchWord) {
+      commit('SEARCH', searchWord)
+    }
   },
 })

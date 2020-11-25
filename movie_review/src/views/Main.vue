@@ -25,7 +25,8 @@ export default {
   computed: {
       ...mapState([
           'movies',
-      ])
+          'search',
+      ]),
   },
   updated : function(){
     console.log(localStorage.getItem('jwt'))
