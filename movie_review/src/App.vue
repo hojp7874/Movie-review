@@ -31,13 +31,16 @@ export default {
 
 <style>
 *{
-  font-family: 'Noto Serif KR', serif;
+  font-family: 'Noto Sans KR', sans-serif;
+  
 }
 /*  #2a2a2e */
 #app{
-  background-color: #323437;
+  background-image: url('~@/assets/rainbow.png');
+  background-size: cover;
+  background-attachment: fixed;
   width: 100vw;
   height:100vh;
 }
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
 </style>

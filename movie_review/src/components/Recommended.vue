@@ -65,18 +65,17 @@ export default {
 </script>
 <style scoped>
 #Recommend {
-  margin-bottom: 20vh;
+  margin-bottom: 0;
   height: 80vh;
   position: relative;
 }
 #Recommend>:nth-child(1){
-  margin: 10vh;
+  margin: 0;
 }
 
 h2 {
   color: white;
   text-align: center;
-  text-decoration-line: underline;
 }
 #caru {
   margin: 3% 0;

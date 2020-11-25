@@ -35,9 +35,5 @@ export default {
 </script>
 
 <style>
-#Main{
-  background-color: #323437;
-
-}
 
 </style>
