@@ -70,7 +70,7 @@ export default {
   margin-bottom: 0;
   height: 80vh;
   position: relative;
-  padding-top: 3%;
+  padding-top: 4%;
 }
 #Recommend>:nth-child(1){
   margin: 0;

@@ -1,19 +1,20 @@
 <template>
   <div id='genreMovie'>
-    <div>
+    <div class='text-center'>
     <b-button-group size="sm" >
       <b-button
         v-for="(btn, idx) in genres"
         :key="idx"
-        variant="outline-danger"
         pill
-        :class="{clicked:genresState[idx]}"
+        :class="{myclass : genresState[Number(idx)]}"
         v-on:click="clicked(idx)"
+        
       >
-        {{ btn }}
+        <span :class="{myclass : genresState[Number(idx)]}" >{{ btn }}</span>
       </b-button>
     </b-button-group>
     </div>
+    <br>
     <MovieList 
       :movies='filterdMovie'
     />
@@ -58,9 +59,11 @@ export default {
 </script>
 
 <style>
-.clicked{
-  background: #dc3545;
-  color: white;
+
+.myclass{
+  color: gold;
 }
+
+
 </style>
 
