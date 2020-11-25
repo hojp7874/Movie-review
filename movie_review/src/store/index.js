@@ -13,6 +13,7 @@ export default new Vuex.Store({
     users:[],
     search:[],
     moviesNm: [],
+    crewsNm: [],
   },
   getters: {
     movieList:function(){
@@ -26,15 +27,16 @@ export default new Vuex.Store({
       state.movies = movieData
       state.search = movieData
       state.moviesNm = movieData.map(a=>a.movieNm)
-      console.log(state.moviesNm)
+      // console.log(state.moviesNm)
     },
-
+    
     LOGOUT : function(){
       localStorage.removeItem('jwt')
       this.loginStatus = !this.loginStatus
       this.$router.go({name: 'Home'})      
     },
     GET_MOVIE_CREW : function(state, movieCrew){
+      state.crewsNm = movieCrew.map(a=>a.name)
       state.crew = movieCrew
     },
     GET_USERS : function(state,data){
@@ -44,16 +46,18 @@ export default new Vuex.Store({
       state.search = state.movies.filter(function (data) {
         return data.movieNm.includes(searchWord)
       })
-      console.log(state.search)
+      state.movies.filter(function (data) {
+        for (let index = 0; index < data.peoples.length; index++) {
+          if (data.peoples[index].name.includes(searchWord)) {
+            return state.search.push(data)
+          }
+        }
+      })
     }
-    // GET_REVIEW : function(state,movieReview){
-    //   state.reviews = movieReview
-    // },
-
-  },
-  actions: {
-    getMovies: function ({commit}) {
-      axios.get(`${SERVER_URL}/movies/movie_list_create/`)
+    },
+    actions: {
+      getMovies: function ({commit}) {
+        axios.get(`${SERVER_URL}/movies/movie_list_create/`)
         .then((res) => {
           const movieData = res.data
           commit('GET_MOVIES', movieData)
