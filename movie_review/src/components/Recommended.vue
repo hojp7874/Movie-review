@@ -12,7 +12,7 @@
         :height='400'
       >
         <slide
-          v-for="(movie,idx) in movies"
+          v-for="(movie,idx) in recommend"
           :key="idx" 
           :index="idx"
           :height='4000'
@@ -59,7 +59,8 @@ export default {
   },
   computed :{
     ...mapState([
-      'movies'
+      'movies',
+      'recommend'
     ])
   }
 };
