@@ -45,11 +45,12 @@ export default {
 
 <style scoped>
 #MovieList {
-  background: url('~@/assets/img4.jpg');
-  background-attachment: fixed;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
+  /* background: url('~@/assets/img4.jpg'); */
+  /* background-attachment: fixed; */
+  background-color: black;
+  /* width: 100vw; */
+  height: 310vh;
+  overflow:auto
 }
 #m3{
   margin : 10vh 0;
