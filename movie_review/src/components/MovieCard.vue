@@ -6,110 +6,116 @@
       <img v-if="!movie.posterSrc" src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
       <img v-else :src="movie.posterSrc" alt="">
     </div>
-    <div class="flip-card-back">
-      
-      <title><span>{{ movie.movieNm }}</span></title>
-      <div>
-        <p>개요</p><span> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
-        <p>개봉</p><span> {{movie.movieCd}} | {{stars[1]}}</span>
-        <p>{{score.length}}개의 점수 평가</p>
-        <p>{{Object.keys(reviews).length}}개의 리뷰</p>
-        
-        <p><b-icon icon="emoji-angry" style="color : red"></b-icon> : {{stars[2]}}</p>
-        <p><b-icon icon="emoji-frown" style="color : red"></b-icon> : {{stars[3]}}</p>
-        <p><b-icon icon="emoji-neutral" style="color : red"></b-icon> : {{stars[4]}}</p>
-        <p><b-icon icon="emoji-smile" style="color : red"></b-icon> : {{stars[5]}}</p>
-        <p><b-icon icon="emoji-heart-eyes" style="color : red"></b-icon> :{{stars[6]}} </p>
+    <div
+      class="flip-card-back"
+      style="cursor:pointer"
+      @click="$bvModal.show(`bv-modal-${idx}`), searchMV(movie.movieNm), getMovieScore(movie.movieCd), getReview(movie.movieCd)"
+    >
+      <div class="text-center">
+        <h3 class="mt-5 mb-2 text-dark">{{ movie.movieNm }}</h3>
+        <p>{{ movie.genreAlt }} | {{movie.nationAlt}}</p>
+        <p>{{movie.openDt}} {{movie.prdtStatNm}}</p>
+        <p>평점: {{stars[1]}}</p>
+        <!-- <p>{{score.length}}개의 점수 평가</p> -->
+        <p>리뷰 {{Object.keys(reviews).length}}개</p>
+        <p>내 평점: </p>
+        <b-icon icon="emoji-angry" style="color : brown"></b-icon>
+        <b-icon icon="emoji-frown" style="color : brown"></b-icon>
+        <b-icon icon="emoji-neutral" style="color : brown"></b-icon>
+        <b-icon icon="emoji-smile" style="color : brown"></b-icon>
+        <b-icon icon="emoji-heart-eyes" style="color : brown"></b-icon>
       </div>
-      <b-button id="show-btn" v-b-modal="`bv-modal-${movie.movieCd}`">show detail</b-button>
-        <b-modal :id="`bv-modal-${movie.movieCd}`" hide-footer size='xl'>
-            <template #modal-title style="text-align : center">
-            <span>{{ movie.movieNm }} | {{stars[0]}} {{stars[1]}}</span>
-            </template>
-            <div class="d-block">
-              <div id='modalContent'>
-                <div>
-                  <img class="col-12" v-if="!movie.posterSrc" src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
-                  <img class="col-12" v-else :src="movie.posterSrc" alt="">
-                </div>
-                <div>
-                  <title>{{ movie.movieNm }}</title>
-                  <p>개요</p><span> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
-                  <p>개봉</p><span> {{movie.prtdYear}}</span>
-                <div>
-                  <b-button-group>
-                    <b-button :class="{bgON : btn1}" @click='scoreSelect(movie.movieCd,1)' variant="outline-warning">
-                      <b-icon icon="emoji-angry"></b-icon>
-                      <p>최악이에요!</p>
-                    </b-button>
-                    <b-button :class="{bgON : btn2}" @click='scoreSelect(movie.movieCd,2)' variant="outline-warning">
-                      <b-icon icon="emoji-frown"></b-icon>
-                      <p>그저 그래요</p>
-                    </b-button>
-                    <b-button :class="{bgON : btn3}" @click='scoreSelect(movie.movieCd,3)' variant="outline-warning">
-                      <b-icon icon="emoji-neutral"></b-icon>
-                      <p>볼만해요</p>
-                    </b-button>
-                    <b-button :class="{bgON : btn4}" @click='scoreSelect(movie.movieCd,4)' variant="outline-warning">
-                      <b-icon icon="emoji-smile"></b-icon>
-                      <p>재밌어요</p>
-                    </b-button>
-                    <b-button :class="{bgON : btn5}" @click='scoreSelect(movie.movieCd,5)' variant="outline-warning">
-                      <b-icon icon="emoji-heart-eyes"></b-icon>
-                      <p>최고에요!</p>
-                    </b-button>
-                  </b-button-group>
-                </div>
-                <div>
-                  <p>영화 줄거리</p>
-                  <span>{{movie.story}}</span>
-                </div>
-                <ul>
-                  <li
-                    v-for="(person, idx) in movie.peoples"
-                    :key="idx"
-                    :person='person'
-                  >
-                    <div><span>{{person.role}} : </span><span>{{person.name}}</span></div>
-                    <img v-if="person.photo!=='이미지 없음'" :src="person.photo" alt="">
-                    <img v-else src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
-                  </li>
-                </ul>
-                </div>
-                <div>
-                  <p>영화 예고편</p>
-                  <iframe :src="mvUrl" frameborder="0" width=100% height='470'  allowfullscreen></iframe>
-                </div>
-                <div>
-                  <p>영화 리뷰</p>
-                  <form @submit.prevent='makeReview(movie.movieCd)' action="#">
-                    <input v-model.trim="reviewTitle" type="text">
-                    <textarea v-model.trim="reviewContent" id="" cols="30" rows="4"></textarea>
-                    <button @click='makeReview(movie.movieCd)' type="submit">리뷰쓰기</button>
-                  </form>
-                </div>
-                <div>
-                  <ul>
-                    <li
-                      v-for=" (review,idx) in reviews"
-                      :key='idx'
-                      :review='review'
-                    >
-                      <button @click='reviewLike(review,false)' v-if="review.like_users.includes(nowUser)"><b-icon icon="heart-fill" style="color : red"></b-icon></button>
-                      <button @click='reviewLike(review,true)' v-else><b-icon icon="heart" style="color : red"></b-icon></button>
-                      <p>{{review.like_users.length}}명이 좋아합니다.</p>
-                      <p>작성자 : {{review.user.username}}</p>
-                      <p>제목 : {{review.title}}</p>
-                      <p>내용: {{review.content}}</p>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+      <b-modal :id="'bv-modal-'+idx" hide-footer size='xl'>
+        <template #modal-title style="text-align : center">
+          <span>{{ movie.movieNm }} | {{stars[1]}} | </span>
+          <span>
+            별점 주기
+            <b-button-group>
+              <b-button :class="{bgON : btn1}" @click='scoreSelect(movie.movieCd,1)' variant="outline-primary">
+                <b-icon icon="emoji-angry"></b-icon>
+                <!-- <p>최악이에요!</p> -->
+              </b-button>
+              <b-button :class="{bgON : btn2}" @click='scoreSelect(movie.movieCd,2)' variant="outline-primary">
+                <b-icon icon="emoji-frown"></b-icon>
+                <!-- <p>그저 그래요</p> -->
+              </b-button>
+              <b-button :class="{bgON : btn3}" @click='scoreSelect(movie.movieCd,3)' variant="outline-primary">
+                <b-icon icon="emoji-neutral"></b-icon>
+                <!-- <p>볼만해요</p> -->
+              </b-button>
+              <b-button :class="{bgON : btn4}" @click='scoreSelect(movie.movieCd,4)' variant="outline-primary">
+                <b-icon icon="emoji-smile"></b-icon>
+                <!-- <p>재밌어요</p> -->
+              </b-button>
+              <b-button :class="{bgON : btn5}" @click='scoreSelect(movie.movieCd,5)' variant="outline-primary">
+                <b-icon icon="emoji-heart-eyes"></b-icon>
+                <!-- <p>최고에요!</p> -->
+              </b-button>
+            </b-button-group>
+          </span>
+        </template>
+        <div class="d-block">
+          <div id='modalContent'>
+            <div>
+              <p>영화 예고편</p>
+              <iframe :src="mvUrl" frameborder="0" width=100% height='470' allowfullscreen></iframe>
             </div>
-            <b-button class="mt-3" block @click="$bvModal.hide(`bv-modal-${movie.movieCd}`)">닫기</b-button>
-        </b-modal>
-      <div>
-      </div>
+            <div class="container flex">
+              <div class="col-3">
+                <img v-if="!movie.posterSrc" src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
+                <img v-else :src="movie.posterSrc" alt="">
+              </div>
+              <div class="col-3">
+                <!-- <title>{{ movie.movieNm }}</title> -->
+                <p>개요</p><span> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
+                <p>개봉</p><span> {{movie.prtdYear}}</span>
+              <div>
+            </div>
+            </div>
+            <div>
+              <p>영화 줄거리</p>
+              <span>{{movie.story}}</span>
+            </div>
+            <ul>
+              <li
+                v-for="(person, idx) in movie.peoples"
+                :key="idx"
+                :person='person'
+              >
+                <div><span>{{person.role}} : </span><span>{{person.name}}</span></div>
+                <img v-if="person.photo!=='이미지 없음'" :src="person.photo" alt="">
+                <img v-else src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
+              </li>
+            </ul>
+            </div>
+            <div>
+              <p>영화 리뷰</p>
+              <form @submit.prevent='makeReview(movie.movieCd)' action="#">
+                <input v-model.trim="reviewTitle" type="text">
+                <textarea v-model.trim="reviewContent" id="" cols="30" rows="4"></textarea>
+                <button @click='makeReview(movie.movieCd)' type="submit">리뷰쓰기</button>
+              </form>
+            </div>
+            <div>
+              <ul>
+                <li
+                  v-for=" (review,idx) in reviews"
+                  :key='idx'
+                  :review='review'
+                >
+                  <button @click='reviewLike(review,false)' v-if="review.like_users.includes(nowUser)"><b-icon icon="heart-fill" style="color : red"></b-icon></button>
+                  <button @click='reviewLike(review,true)' v-else><b-icon icon="heart" style="color : red"></b-icon></button>
+                  <p>{{review.like_users.length}}명이 좋아합니다.</p>
+                  <p>작성자 : {{review.user.username}}</p>
+                  <p>제목 : {{review.title}}</p>
+                  <p>내용: {{review.content}}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <b-button class="mt-3" block @click="$bvModal.hide(`bv-modal-${idx}`)">닫기</b-button>
+      </b-modal>
     </div>
   </div>
 </div>
@@ -405,7 +411,7 @@ export default {
 
 <style scoped>
 #MovieCard {
-  background-color: #323437;
+  background: none;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -436,9 +442,9 @@ export default {
   position: absolute;
   border-radius: 0.5rem;
 }
-.flip-card-front {
+/* .flip-card-front {
   color: white;
-}
+} */
 .flip-card-back {
   background-color: #f5f5f5;
   color: white;
@@ -451,7 +457,7 @@ export default {
 }
 .flip-card-back p {
   color: #5d4037;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 .flip-card-back span{
   color: #000000;

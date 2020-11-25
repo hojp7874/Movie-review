@@ -30,7 +30,8 @@ export default {
 
 <style>
 *{
-  font-family: 'Noto Serif KR', serif;
+  font-family: 'Noto Sans KR', sans-serif;
+  
 }
 /*  #2a2a2e */
 #app::before{
@@ -44,9 +45,12 @@ export default {
     z-index: 0;
     opacity: 0.2;
     background: url('~@/assets/img4.jpg') no-repeat center center;
-    background-size: cover;
+    background-size: cover ;
+    position: fixed;
 }
 #app{
+  background-size: cover;
+  background-attachment: fixed;
   width: 100vw;
   height:100vh;
   position: relative;
@@ -55,4 +59,6 @@ export default {
 
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+
 </style>

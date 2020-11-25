@@ -15,7 +15,6 @@ export default new Vuex.Store({
     search:[],
     moviesNm: [],
     crewsNm: [],
-
   },
   getters: {
     movieList:function(){
@@ -51,6 +50,7 @@ export default new Vuex.Store({
           }
         }
       })
+      state.search = Array.from(new Set(state.search))
     }
     },
     actions: {
