@@ -1,56 +1,66 @@
 <template>
   <div id='genreMovie'>
-    <b-button-group size="sm" @click="click(genresBtn)">
+    <div>
+    <b-button-group size="sm" >
       <b-button
-        v-for="(btn, idx) in genresBtn"
+        v-for="(btn, idx) in genres"
         :key="idx"
-        :pressed.sync="btn.state"
-        variant="primary"
-        :class="{clicked:btn.state}"
+        variant="outline-danger"
+        pill
+        :class="{clicked:genresState[idx]}"
+        v-on:click="clicked(idx)"
       >
-        {{ btn.caption }}
+        {{ btn }}
       </b-button>
     </b-button-group>
-    <div>{{btnStates}}</div>
+    </div>
+    <MovieList 
+      :movies='filterdMovie'
+    />
   </div>
 </template>
 
 <script>
+import MovieList from '@/components/MovieList.vue'
+import { mapState } from 'vuex'
+
 export default {
   name : 'GenreMovie',
-  computed : {
-    genresBtn : {
-      get(){
-      let lst = []
-      this.$store.state.genres.forEach((genre)=>{
-        lst.push({caption : genre, state : false})
-      })
-      return lst
-      },
-      set(){
+  components : {
+    MovieList,
+  },
 
-      }
-    },
-    btnStates : {
-      get(){
-        return this.genresBtn.map(btn => btn.state)
-      },
-      set(){
-        
-      }
-    }
+  computed : {
+    ...mapState([
+      'genres',
+      'genresState',
+      'movies',
+      'filterdMovie'
+    ]),
+    // filteredMovie : function(){
+    //   const list =[]
+    //   for(var i =0; i<this.genresState.length; i++){
+    //     if(this.genresState[i]){
+    //       list.push(this.genres[i])
+    //     }
+    //   }
+    //   return this.movies.filter((movie)=>{
+    //     return list.includes(movie.repGenreNm) 
+    //   })
+    // }
   },
   methods :{
-    click : function(data){
-      this.genresBtn = data
+    clicked : function(idx){
+      this.$store.dispatch('stateChange',idx)
     }
-  }
+  },
 }
 </script>
 
 <style>
 .clicked{
-  background: #005cbf;;
+  background: #dc3545;
+  color: white;
 }
 </style>
 

@@ -17,6 +17,8 @@ export default new Vuex.Store({
     crewsNm: [],
     genres : [],
     nations :[],
+    genresState :[],
+    filterdMovie:[],
   },
   getters: {
     movieList:function(){
@@ -29,6 +31,7 @@ export default new Vuex.Store({
       state.search = movieData
       state.moviesNm = movieData.map(a=>a.movieNm)
       state.genres = Array.from(new Set(movieData.map(a=>a.repGenreNm)))
+      state.genresState = new Array(state.genres.length)
       state.nations = Array.from(new Set(movieData.map(a=>a.repNationNm)))
     },
     LOGOUT : function(state){
@@ -57,6 +60,19 @@ export default new Vuex.Store({
     },
     LOGIN : function(state){
       state.loginStatus = true
+    },
+    STATE_CHANGE : function(state,idx){
+      state.genresState[idx] = !state.genresState[idx]
+      const list =[]
+      for(var i =0; i <state.genresState.length; i++){
+        if(state.genresState[i]){
+          list.push(state.genres[i])
+        }
+      }
+      const filtered = state.movies.filter((movie)=>{
+        return list.includes(movie.repGenreNm) 
+      })
+      state.filterdMovie = filtered
     }
     },
     actions: {
@@ -98,6 +114,9 @@ export default new Vuex.Store({
     },
     login : function({commit}){
       commit('LOGIN')
+    },
+    stateChange : function({commit},idx){
+      commit('STATE_CHANGE',idx)
     }
   },
 })
