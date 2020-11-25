@@ -2,6 +2,7 @@
   <div id="Recommend">
     <div>
       <h2>화제의 영화</h2>
+      <br>
     </div>
       <carousel-3d
         v-model="slide"
@@ -68,6 +69,7 @@ export default {
   margin-bottom: 0;
   height: 80vh;
   position: relative;
+  padding-top: 3%;
 }
 #Recommend>:nth-child(1){
   margin: 0;

@@ -30,5 +30,26 @@ export default {
 </script>
 
 <style>
-
+#Allmovielist::before{
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.2;
+    background: url('~@/assets/img4.jpg') no-repeat center center;
+    background-size: cover ;
+    position: fixed;
+}
+#Allmovielist{
+  background-size: cover;
+  background-attachment: fixed;
+  width: 100vw;
+  height:100vh;
+  position: relative;
+  background-color: #000;
+}
 </style>

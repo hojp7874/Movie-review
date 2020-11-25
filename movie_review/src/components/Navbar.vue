@@ -7,7 +7,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#"><router-link :to="{ name: 'Allmovielist' }">영화 목록</router-link></b-nav-item>
+          <b-nav-item href="#"><router-link class="whitefont" :to="{ name: 'Allmovielist' }">영화 목록</router-link></b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -33,10 +33,9 @@
             <template #button-content>
               <em class="whitefont">마이페이지</em>
             </template>
-            <b-dropdown-item v-show="logined" href="#">내 활동</b-dropdown-item>
-            <b-dropdown-item v-show="logined" @click='logout'>로그아웃</b-dropdown-item>
-            <b-dropdown-item v-show="!logined" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
-            <b-dropdown-item v-show="!logined" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="loginStatus" @click='logout'>로그아웃</b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -103,6 +102,7 @@ export default {
 <style>
 #navbar {
   width: 100vw;
+  z-index: 1;
   position: sticky;
   background: none;
   border-bottom: darkgray 0.1em solid;
@@ -113,5 +113,19 @@ export default {
 .navbar-light .navbar-nav .nav-link:hover {
   color: white;
   text-decoration: none;
+}
+router-link:link,
+router-link:visited,
+router-link:hover{
+  color: white;
+  font-style: none;
+}
+.whitefont{
+  color: white;
+  font-style: none;
+}
+.whitefont:hover{
+  color:white;
+  font-style: none;
 }
 </style>

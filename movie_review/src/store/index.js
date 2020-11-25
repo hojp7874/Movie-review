@@ -15,6 +15,8 @@ export default new Vuex.Store({
     search:[],
     moviesNm: [],
     crewsNm: [],
+    genres : [],
+    nations :[],
   },
   getters: {
     movieList:function(){
@@ -26,7 +28,8 @@ export default new Vuex.Store({
       state.movies = movieData
       state.search = movieData
       state.moviesNm = movieData.map(a=>a.movieNm)
-      // console.log(state.moviesNm)
+      state.genres = Array.from(new Set(movieData.map(a=>a.repGenreNm)))
+      state.nations = Array.from(new Set(movieData.map(a=>a.repNationNm)))
     },
     LOGOUT : function(state){
       localStorage.removeItem('jwt')
@@ -51,6 +54,9 @@ export default new Vuex.Store({
         }
       })
       state.search = Array.from(new Set(state.search))
+    },
+    LOGIN : function(state){
+      state.loginStatus = true
     }
     },
     actions: {
@@ -64,7 +70,6 @@ export default new Vuex.Store({
           console.log(err)
         })
     },
-
     logout:function({commit}){
       commit('LOGOUT')
     },
@@ -90,6 +95,9 @@ export default new Vuex.Store({
     },
     search: function ({commit}, searchWord) {
       commit('SEARCH', searchWord)
+    },
+    login : function({commit}){
+      commit('LOGIN')
     }
   },
 })

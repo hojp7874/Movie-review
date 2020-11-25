@@ -75,6 +75,7 @@ export default {
           alert('회원가입이 완료되었습니다!!')
         })
         .catch((err) => {
+          alert('올바른 형식으로 작성해주세요.')
           console.log(err)
         })
     }
@@ -93,6 +94,7 @@ export default {
   height: 100vh;
   position: relative;
   display: flexbox;
+  background-color: black;
 }
 #SingupPage::before {
   width: 100%;
@@ -120,7 +122,7 @@ export default {
 }
 #Singup {
   width: 25vw;
-  height: 50vh;
+  height: 60vh;
   background-color: white;
   border: 0px;
   border-radius: 1%;
@@ -149,7 +151,7 @@ a {
   height: 20%;
 }
 #Singup > :nth-child(2) {
-  height: 50%;
+  height: 60%;
 }
 #Singup > :nth-child(3) {
   height: 15%;

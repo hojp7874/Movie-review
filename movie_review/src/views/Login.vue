@@ -67,10 +67,11 @@ export default {
       axios.post(`${SERVER_URL}/accounts/api-token-auth/`,this.credentials)
           .then((res)=>{
             localStorage.setItem('jwt',res.data.token)
-            this.$emit('login')
+            this.$store.dispatch('login',true)
             this.$router.push({name:'Main'})
           })
           .catch((err)=>{
+            alert(err)
             console.log(err)
           })
     },
@@ -89,6 +90,7 @@ export default {
   height: 100vh;
   position: relative;
   display: flexbox;
+  background-color: black;
 }
 #loginPage::before {
   width: 100%;
