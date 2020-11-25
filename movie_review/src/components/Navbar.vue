@@ -14,16 +14,19 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
-              <b-form-input
-                v-model="searchWord"
-                size="sm"
-                class="mr-sm-2"
-                placeholder="검색어를 입력하세요"
-                ></b-form-input>
-                <!-- <ul v-show="searchWord.length">
-                  <li v-for="(wd,idx) in candidate" :key='idx'></li>
-                </ul> -->
-              <b-button size="sm" class="my-2 my-sm-0" type="submit">🔍</b-button>
+              <!-- :data="moviesNm" -->
+            <vue-bootstrap-typeahead
+              :data="searchNm"
+              v-model="searchWord"
+              size="sm"
+              class="mr-sm-2"
+              placeholder="검색어를 입력하세요"
+              @keypress.enter="search"
+            />
+              <!-- <ul v-show="searchWord.length">
+                <li v-for="(wd,idx) in candidate" :key='idx'></li>
+              </ul> -->
+            <b-button size="sm" class="my-2 my-sm-0" @click="search">🔍</b-button>
           </b-nav-form>
 
           <b-nav-item-dropdown right>
@@ -31,10 +34,10 @@
             <template #button-content>
               <em class="whitefont">마이페이지</em>
             </template>
-            <b-dropdown-item v-show="loginStatus" href="#">내 활동</b-dropdown-item>
-            <b-dropdown-item v-show="loginStatus" @click='logout'>로그아웃</b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="logined" href="#">내 활동</b-dropdown-item>
+            <b-dropdown-item v-show="logined" @click='logout'>로그아웃</b-dropdown-item>
+            <b-dropdown-item v-show="!logined" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="!logined" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -44,21 +47,24 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
 
 export default {
   name: "Navbar",
   data:function(){
     return{
       searchWord : '',
-      // movieList:[],
-      // loginStatus:'',
+      logined : false
     }
   },
   components : {
+    VueBootstrapTypeahead
   },
-    computed : {
+  computed : {
     ...mapState([
-      'loginStatus'
+      'loginStatus',
+      'moviesNm',
+      'crewsNm',
     ]),
     ...mapGetters([
       'movieList'
@@ -67,6 +73,9 @@ export default {
       return this.$store.getters.movieList.filter(function(movie){
         return (movie.indexOf(this.searchWord) !== -1)
       })
+    },
+    searchNm: function () {
+      return this.moviesNm.concat(this.crewsNm)
     }
   },
   methods: {
@@ -75,8 +84,18 @@ export default {
     },
     logout : function(){
       this.$store.dispatch('logout')
+      this.$router.push({name:'Home'})
+    },
+    search: function() {
+      this.$store.dispatch('search', this.searchWord)
     },
   },
+  mounted : function(){
+      if(localStorage.getItem('jwt')){
+        this.logined=true
+      }
+    }
+  
 };
 </script>
 

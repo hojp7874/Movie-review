@@ -11,11 +11,18 @@
       <title><span>{{ movie.movieNm }}</span></title>
       <div>
         <p>개요</p><span> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
-        <p>개봉</p><span> {{movie.movieCd}} | ☆☆☆☆☆</span>
+        <p>개봉</p><span> {{movie.movieCd}} | {{stars[1]}}</span>
+        <p>{{score.length}}개의 점수 평가</p>
+        <p>{{Object.keys(reviews).length}}개의 리뷰</p>
+        <b-icon icon="emoji-angry" style="color : red"></b-icon>
+        <b-icon icon="emoji-frown" style="color : red"></b-icon>
+        <b-icon icon="emoji-neutral" style="color : red"></b-icon>
+        <b-icon icon="emoji-smile" style="color : red"></b-icon>
+        <b-icon icon="emoji-heart-eyes" style="color : red"></b-icon>
       </div>
-      <b-button id="show-btn"  @click="$bvModal.show(`bv-modal-example${idx}`), searchMV(movie.movieNm), getMovieScore(movie.movieCd), getReview(movie.movieCd)">show detail</b-button>
+      <b-button id="show-btn" @click="$bvModal.show(`bv-modal-${idx}`), searchMV(movie.movieNm), getMovieScore(movie.movieCd), getReview(movie.movieCd)">show detail</b-button>
 
-        <b-modal :id="'bv-modal-example'+idx" hide-footer>
+        <b-modal :id="'bv-modal-'+idx" hide-footer size='xl'>
             <template #modal-title style="text-align : center">
             <span>{{ movie.movieNm }} | {{stars[0]}} {{stars[1]}}</span>
             </template>
@@ -31,23 +38,23 @@
                   <p>개봉</p><span> {{movie.prtdYear}}</span>
                 <div>
                   <b-button-group>
-                    <b-button @click='scoreSelect(movie.movieCd,1)' variant="outline-warning">
+                    <b-button :class="{bgON : btn1}" @click='scoreSelect(movie.movieCd,1)' variant="outline-warning">
                       <b-icon icon="emoji-angry"></b-icon>
                       <p>최악이에요!</p>
                     </b-button>
-                    <b-button @click='scoreSelect(movie.movieCd,2)' variant="outline-warning">
+                    <b-button :class="{bgON : btn2}" @click='scoreSelect(movie.movieCd,2)' variant="outline-warning">
                       <b-icon icon="emoji-frown"></b-icon>
                       <p>그저 그래요</p>
                     </b-button>
-                    <b-button @click='scoreSelect(movie.movieCd,3)' variant="outline-warning">
+                    <b-button :class="{bgON : btn3}" @click='scoreSelect(movie.movieCd,3)' variant="outline-warning">
                       <b-icon icon="emoji-neutral"></b-icon>
                       <p>볼만해요</p>
                     </b-button>
-                    <b-button @click='scoreSelect(movie.movieCd,4)' variant="outline-warning">
+                    <b-button :class="{bgON : btn4}" @click='scoreSelect(movie.movieCd,4)' variant="outline-warning">
                       <b-icon icon="emoji-smile"></b-icon>
                       <p>재밌어요</p>
                     </b-button>
-                    <b-button @click='scoreSelect(movie.movieCd,5)' variant="outline-warning">
+                    <b-button :class="{bgON : btn5}" @click='scoreSelect(movie.movieCd,5)' variant="outline-warning">
                       <b-icon icon="emoji-heart-eyes"></b-icon>
                       <p>최고에요!</p>
                     </b-button>
@@ -64,7 +71,8 @@
                     :person='person'
                   >
                     <div><span>{{person.role}} : </span><span>{{person.name}}</span></div>
-                    <img :src="person.photo" alt="">
+                    <img v-if="person.photo!=='이미지 없음'" :src="person.photo" alt="">
+                    <img v-else src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
                   </li>
                 </ul>
                 </div>
@@ -87,6 +95,9 @@
                       :key='idx'
                       :review='review'
                     >
+                      <button @click='reviewLike(review,false)' v-if="review.like_users.includes(nowUser)"><b-icon icon="heart-fill" style="color : red"></b-icon></button>
+                      <button @click='reviewLike(review,true)' v-else><b-icon icon="heart" style="color : red"></b-icon></button>
+                      <p>{{review.like_users.length}}명이 좋아합니다.</p>
                       <p>작성자 : {{review.user.username}}</p>
                       <p>제목 : {{review.title}}</p>
                       <p>내용: {{review.content}}</p>
@@ -95,7 +106,7 @@
                 </div>
               </div>
             </div>
-            <b-button class="mt-3" block @click="$bvModal.hide(`bv-modal-example${idx}`)">닫기</b-button>
+            <b-button class="mt-3" block @click="$bvModal.hide(`bv-modal-${idx}`)">닫기</b-button>
         </b-modal>
 
     </div>
@@ -122,6 +133,11 @@ export default {
         score :[],
         reviewTitle:'',
         reviewContent : '',
+        btn1:false,
+        btn2:false,
+        btn3:false,
+        btn4:false,
+        btn5:false,
       }
   },
   computed:{
@@ -141,6 +157,9 @@ export default {
         return [value,'★'.repeat(value2) + '☆'.repeat(5-value2)]
       }
     },
+    nowUser : function(){
+      return this.getUsername()
+    }
   },
   props: {
     movie: {
@@ -153,7 +172,6 @@ export default {
   methods :{
     setToken: function () {
       const token = localStorage.getItem('jwt')
-
       const config = {
         headers: {
           Authorization: `JWT ${token}`
@@ -201,40 +219,145 @@ export default {
         .then((res) => {
           const movieScore = res.data
           this.score = movieScore
+          if(localStorage.getItem('jwt')){
+            const userSet = this.score.map(a=>a.user)
+            const nowUser =this.getUsername()
+            const userIdx = userSet.indexOf(nowUser)
+            if(userIdx!==-1){
+              switch(this.score[userIdx].score){
+                case 1 :
+                  this.btn1=true;
+                  break;
+                case 2 :
+                  this.btn2=true;
+                  break;
+                case 3 :
+                  this.btn3=true;
+                  break;
+                case 4 :
+                  this.btn4=true;
+                  break;
+                case 5 :
+                  this.btn5=true;
+                  break;
+                default :
+                  break;
+              }
+              }          
+          }
         })
         .catch((err)=>{
           console.log(err)
         })      
     },
-    scoreSelect : function(code, score){
-      const user2 =this.getUsername()
-      let can = false
-      this.score.forEach((obj)=>{
-        if(obj.user===user2){
-          can = false
-        }else{
-          can = true
+    scoreSelect : function(code, newScore){
+      //비로그인
+      if(!localStorage.getItem('jwt')){
+        const ans = confirm('영화 평점을 남기려면 로그인 해주세요.')
+        if(ans){
+          this.$router.push({name:'Login'})
         }
-      })
-      if(can){
+      //로그인
+      }else{
+        const user2 =this.getUsername()
         const config = this.setToken()
+        let scoreList = this.score.map(a=>a.score)
+        let userList = this.score.map(a=>a.user)
         const item = {
           movie: code,
-          score : score,
+          score : newScore,
           user : user2
         }
-        axios.post(`${SERVER_URL}/movies/movie_score_create/`,item,config)
-          .then(() => {
-            this.score.push(item)
-          })
-          .catch((err)=>{
-            console.log(err)
-          })            
-      }else{
-        return
+        
+        const scoreIdx = userList.indexOf(user2)
+        if(scoreIdx !=-1){
+          //리뷰가 있으면
+          if(scoreList[scoreIdx] === newScore){
+            // 기존의 점수와 같으면 -> DELETE
+            axios.delete(`${SERVER_URL}/movies/${code}/movie_score_update_delete/`,{headers : {Authorization: this.setToken().headers.Authorization},data : {movie : code, score : scoreList[scoreIdx], user: user2}})
+              .then(() => {
+                this.score.splice(scoreIdx,1)
+                this.btn1=false
+                this.btn2=false
+                this.btn3=false
+                this.btn4=false
+                this.btn5=false
+              })
+              .catch((err)=>{
+                console.log(err)
+              })
+          }else{
+            // 다르면 put
+            axios.patch(`${SERVER_URL}/movies/${code}/movie_score_update_delete/`,{data : {score : newScore}},config)
+              .then(() => {
+                this.score[scoreIdx].score = item.score
+                switch(item.score){
+                  case 1 :
+                    this.btn1=true;
+                    this.bnt2=false; this.btn3=false; this.btn4=false; this.btn5=false;
+                    break;
+                  case 2 :
+                    this.btn2=true;
+                    this.btn1=false; this.btn3=false; this.btn4=false; this.btn5=false;
+                    break;
+                  case 3 :
+                    this.btn3=true;
+                    this.btn1=false; this.btn2=false; this.btn4=false; this.btn5=false;
+                    break;
+                  case 4 :
+                    this.btn4=true;
+                    this.btn1=false; this.btn2=false; this.btn3=false; this.btn5=false;
+                    break;
+                  case 5 :
+                    this.btn5=true;
+                    this.btn1=false; this.btn2=false; this.btn3=false; this.btn4=false;
+                    break;
+                  default :
+                    break;
+              }
+              })
+              .catch((err)=>{
+                console.log(err)
+              })
+          }
+        //POST
+        }else{
+          axios.post(`${SERVER_URL}/movies/movie_score_create/`,item,config)
+            .then(() => {
+              this.score.push(item)
+                switch(item.score){
+                  case 1 :
+                    this.btn1=true;
+                    break;
+                  case 2 :
+                    this.btn2=true;
+                    break;
+                  case 3 :
+                    this.btn3=true;
+                    break;
+                  case 4 :
+                    this.btn4=true;
+                    break;
+                  case 5 :
+                    this.btn5=true;
+                    break;
+                  default :
+                    break;
+              }    
+            })
+            .catch((err)=>{
+              console.log(err)
+            })
+        }
       }
     },
     makeReview : function(code){
+      if(!localStorage.getItem('jwt')){
+        const ans = confirm('영화에 대한 리뷰를 남기려면 로그인 해주세요.')
+        if(ans){
+          this.$router.push({name:'Login'})
+        }
+      }
       const config = this.setToken()
       // VueJwtDecode.decode(localStorage.getItem('jwt'))
       const user2 =this.getUsername()
@@ -256,6 +379,20 @@ export default {
         })            
       
     },
+    reviewLike:function(review,bool){
+      const user2 =this.getUsername()
+      const config = this.setToken()
+      axios.post(`${SERVER_URL}/movies/${review.id}/review_like/`,bool,config)
+        .then(()=>{
+          const idx = this.reviews.map(a=>a.id).indexOf(review.id)
+          if(bool){
+            this.reviews[idx].like_users.push(user2)
+          }else{
+            const userIdx = this.reviews[idx].like_users.indexOf(user2)
+            this.reviews[idx].like_users.splice(userIdx,1)
+          }
+        })
+    }
   },
   created : function(){
     this.$emit('getImgUrl',this.movie.posterSrc)
@@ -341,5 +478,9 @@ b-modal{
 }
 b-button>p{
   font-size: 0.5em;
+}
+.bgON{
+  background: #ffc107;
+  color: #212529;
 }
 </style>

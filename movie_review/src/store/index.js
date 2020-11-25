@@ -11,39 +11,51 @@ export default new Vuex.Store({
     movies:[],
     crew:[],
     users:[],
+    loginStatus : false,
+    search:[],
+    moviesNm: [],
+    crewsNm: [],
 
   },
   getters: {
     movieList:function(){
-      return this.state.movies.forEach((obj)=>{
-        return obj.movieNm
-      })
-    }
+      return this.state.movies.map(a=>a.movieNm)
+      }
   },
   mutations: {
     GET_MOVIES: function (state, movieData) {
       state.movies = movieData
+      state.search = movieData
+      state.moviesNm = movieData.map(a=>a.movieNm)
+      // console.log(state.moviesNm)
     },
-
-    LOGOUT : function(){
+    LOGOUT : function(state){
       localStorage.removeItem('jwt')
-      this.loginStatus = !this.loginStatus
-      this.$router.go({name: 'Home'})      
+      state.loginStatus=false
     },
     GET_MOVIE_CREW : function(state, movieCrew){
+      state.crewsNm = movieCrew.map(a=>a.name)
       state.crew = movieCrew
     },
     GET_USERS : function(state,data){
       state.users = data
     },
-    // GET_REVIEW : function(state,movieReview){
-    //   state.reviews = movieReview
-    // },
-
-  },
-  actions: {
-    getMovies: function ({commit}) {
-      axios.get(`${SERVER_URL}/movies/movie_list_create/`)
+    SEARCH: function (state, searchWord) {
+      state.search = state.movies.filter(function (data) {
+        return data.movieNm.includes(searchWord)
+      })
+      state.movies.filter(function (data) {
+        for (let index = 0; index < data.peoples.length; index++) {
+          if (data.peoples[index].name.includes(searchWord)) {
+            return state.search.push(data)
+          }
+        }
+      })
+    }
+    },
+    actions: {
+      getMovies: function ({commit}) {
+        axios.get(`${SERVER_URL}/movies/movie_list_create/`)
         .then((res) => {
           const movieData = res.data
           commit('GET_MOVIES', movieData)
@@ -76,5 +88,8 @@ export default new Vuex.Store({
           console.log(err)
         })      
     },
+    search: function ({commit}, searchWord) {
+      commit('SEARCH', searchWord)
+    }
   },
 })
