@@ -1,11 +1,8 @@
 <template>
   <div id="MovieList">
-    <div id="m3">
-      <h2>모든 영화</h2>
-    </div>
     <div class="flip-card-container p-0 col-12">
       <MovieCard
-        v-for="(movie,idx) in search"
+        v-for="(movie,idx) in movies"
         :key="idx"
         :movie='movie'
         :idx='idx'
@@ -27,16 +24,17 @@ export default {
       }
   },
   props: {
+    movies : {
+      type : Array,
+    }
   },
   components:{
     MovieCard,
   },
   computed : {
     ...mapState([
-      'movies',
       'score',
       'crew',
-      'search',
     ])
   },
 
@@ -67,10 +65,6 @@ export default {
   display: flex;
   flex-flow : row wrap
 }
-h2 {
-  text-align: center;
-  color: White;
-  text-decoration: underline;
-}
+
 
 </style>

@@ -9,7 +9,7 @@
     <div
       class="flip-card-back"
       style="cursor:pointer"
-      @click="$bvModal.show(`bv-modal-${idx}`), searchMV(movie.movieNm), getMovieScore(movie.movieCd), getReview(movie.movieCd)"
+      @click="$bvModal.show(`bv-modal-${idx}`), getTrailer(movie.movieNm)"
     >
       <div class="text-center">
         <h3 class="mt-5 mb-2 text-dark">{{ movie.movieNm }}</h3>
@@ -354,27 +354,28 @@ export default {
             this.reviews[idx].like_users.splice(userIdx,1)
           }
         })
+    },
+    getTrailer : function(title){
+      axios.get(GOOGLE_API, {
+      params:{
+        key : API_KEY,
+        part : 'snippet',
+        type : 'video',
+        q : `영화+${title}+예고`,
+      }
+      })
+        .then( res => {
+          const mvWord = res.data.items[0].id.videoId
+          this.mvUrl = `https://www.youtube.com/embed/${mvWord}`
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   created : function(){
     this.$emit('getImgUrl',this.movie.posterSrc)
     this.$emit('getCrew',this.movie.movieCd)
-    const title = this.movie.title
-    axios.get(GOOGLE_API, {
-    params:{
-      key : API_KEY,
-      part : 'snippet',
-      type : 'video',
-      q : `영화+${title}+예고`,
-    }
-    })
-      .then( res => {
-        const mvWord = res.data.items[0].id.videoId
-        this.mvUrl = `https://www.youtube.com/embed/${mvWord}`
-      })
-      .catch(err => {
-        console.log(err)
-      })
     const code=this.movie.movieCd
     axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
       .then((res) => {

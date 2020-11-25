@@ -1,13 +1,12 @@
 <template>
   <div id='genreMovie'>
-    <b-button-group size="sm" >
+    <b-button-group size="sm" @click="click(genresBtn)">
       <b-button
         v-for="(btn, idx) in genresBtn"
         :key="idx"
         :pressed.sync="btn.state"
         variant="primary"
         :class="{clicked:btn.state}"
-        @click="click(genresBtn)"
       >
         {{ btn.caption }}
       </b-button>
@@ -20,16 +19,25 @@
 export default {
   name : 'GenreMovie',
   computed : {
-    genresBtn : function(){
+    genresBtn : {
+      get(){
       let lst = []
       this.$store.state.genres.forEach((genre)=>{
         lst.push({caption : genre, state : false})
       })
       return lst
+      },
+      set(){
+
+      }
     },
-    btnStates : function(){
-      console.log(this.genresBtn.map(btn => btn.state))
-      return this.genresBtn.map(btn => btn.state)
+    btnStates : {
+      get(){
+        return this.genresBtn.map(btn => btn.state)
+      },
+      set(){
+        
+      }
     }
   },
   methods :{

@@ -5,6 +5,7 @@ import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Signup from '@/views/Signup.vue'
 import Allmovielist from '@/views/Allmovielist.vue'
+import SearchedList from '@/views/SearchedList.vue'
 
 Vue.use(VueRouter)
 
@@ -34,6 +35,11 @@ const routes = [
     path : '/movielist',
     name : 'Allmovielist',
     component : Allmovielist
+  },
+  {
+    path : '/search',
+    name : 'SearchedList',
+    component : SearchedList
   },
 
 ]

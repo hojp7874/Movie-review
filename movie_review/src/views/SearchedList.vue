@@ -1,45 +1,36 @@
 <template>
-  <div id='Main'>
+  <div id='SearchedList'>
     <Navbar />
     <br>
-    <Recommended />
-    <br><br>
-    <GenreMovie />
-    <!-- <MovieList 
-      :movies="movies"
-    /> -->
+    <h2>검색된 영화</h2>
+    <MovieList 
+      :movies="search"
+    />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Navbar from '@/components/Navbar.vue'
-import Recommended from '@/components/Recommended.vue'
-// import MovieList from '@/components/MovieList.vue'
-import GenreMovie from '@/components/GenreMovie.vue'
+import MovieList from '@/components/MovieList.vue'
+import { mapState } from 'vuex'
+
 
 export default {
-  name: 'Main',
-  components: {
+  name : 'SearchedList',
+  components : {
     Navbar,
-    Recommended,
-    // MovieList,
-    GenreMovie,
+    MovieList
   },
-  computed: {
-    ...mapState([
-        'movies',
-        'search',
-    ]),
-  },
-  updated : function(){
-    console.log(localStorage.getItem('jwt'))
+  computed : {
+      ...mapState([
+          'search',
+      ]),
   }
 }
 </script>
 
 <style>
-#Main::before{
+#SearchedList::before{
     content: ' ';
     display: block;
     position: absolute;
@@ -53,14 +44,19 @@ export default {
     background-size: cover ;
     position: fixed;
 }
-#Main{
+#SearchedList{
   background-size: cover;
   background-attachment: fixed;
   width: 100vw;
   height:100vh;
   position: relative;
   background-color: #000;
-
 }
-
+h2 {
+  text-align: center;
+  color: White;
+  font-weight: 700;
+  margin: 3% 0 3% 0;
+  font-size: 2rem;
+}
 </style>

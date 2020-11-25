@@ -2,6 +2,7 @@
   <div id='Allmovielist'>
     <Navbar />
     <br>
+    <h2>모든 영화</h2>
     <MovieList 
       :movies="movies"
     />
@@ -23,13 +24,12 @@ export default {
   computed : {
       ...mapState([
           'movies',
-          'search',
       ]),
   }
 }
 </script>
 
-<style>
+<style >
 #Allmovielist::before{
     content: ' ';
     display: block;
@@ -51,5 +51,12 @@ export default {
   height:100vh;
   position: relative;
   background-color: #000;
+}
+h2 {
+  text-align: center;
+  color: White;
+  font-weight: 700;
+  margin: 3% 0 3% 0;
+    font-size: 2rem;
 }
 </style>

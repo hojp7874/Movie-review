@@ -87,7 +87,7 @@ export default {
     },
     search: function() {
       this.$store.dispatch('search', this.searchWord)
-      this.$router.push({name : 'Allmovielist'})
+      this.$router.push({name : 'SearchedList'})
     },
   },
   mounted : function(){
