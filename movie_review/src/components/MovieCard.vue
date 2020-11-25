@@ -1,7 +1,11 @@
 <template>
   <div id="MovieCard" class='col-2'>
     <div class="flip-card" :movie='movie' >
-    <div class="flip-card-front">
+    <div
+      class="flip-card-front"
+      style="cursor:pointer"
+      @click="$bvModal.show(`bv-modal-${idx}`), getTrailer(movie.movieNm)"
+    >
       <!-- <img :src="imgSrc" alt="" /> -->
       <img v-if="!movie.posterSrc" src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
       <img v-else :src="movie.posterSrc" alt="">
@@ -34,9 +38,8 @@
             <div>
               <p>영화 예고편</p>
               <iframe :src="mvUrl" frameborder="0" width=100% height='470' allowfullscreen></iframe>
-            </div><hr>
+            </div><hr class="my-3">
             <div class="container d-flex flex-column">
-              <br>
               <div class="d-flex flex-row">
                 <div class="col-3 text-center">
                   <p class="mb-1">
@@ -47,11 +50,15 @@
                   <img v-else :src="movie.posterSrc" alt="">
                   <!-- <title>{{ movie.movieNm }}</title> -->
                 </div>
-                <div class="col-9">
+                <div class="col-9 d-flex flex-column">
                   <p class="mb-1">영화 줄거리</p>
-                  <span>{{movie.story}}</span>
+                  <span class="flex-fill d-flex flex-row">
+                    <p class="align-self-center">
+                      {{movie.story}}
+                    </p>
+                  </span>
                 </div>
-              </div><br><hr>
+              </div><hr class="my-3">
               <div class="container d-flex flex-row flex-wrap">
                 <div
                   v-for="(person, idx) in movie.peoples"
@@ -66,7 +73,7 @@
                   <img class="w-75" v-if="person.photo!=='이미지 없음'" :src="person.photo" alt="">
                   <img class="w-75" v-else src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
                 </div>
-              </div><hr>
+              </div><hr class="my-3">
               <!-- 리뷰작성 -->
               <div>
                 <b-button v-b-toggle.collapse-3 variant="primary" class="m-1">리뷰 작성</b-button>

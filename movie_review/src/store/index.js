@@ -19,6 +19,7 @@ export default new Vuex.Store({
     nations :[],
     genresState :[],
     filterdMovie:[],
+    recommend: [],
   },
   getters: {
     movieList:function(){
@@ -33,6 +34,34 @@ export default new Vuex.Store({
       state.genres = Array.from(new Set(movieData.map(a=>a.repGenreNm)))
       state.genresState = new Array(state.genres.length)
       state.nations = Array.from(new Set(movieData.map(a=>a.repNationNm)))
+      for (let index = 0; index < movieData.length; index++) {
+        // console.log(movieData[index].popularity)
+        // console.log(movieData[index].popularity.slice(-2, ))
+        if (movieData[index].popularity != null) {
+          if (movieData[index].popularity.slice(-2, ) == '만명' && movieData[index].popularity.slice(0, -2) > 10) {
+            state.recommend.push(movieData[index])
+          } else if (movieData[index].reviews) {
+            state.recommend.push(movieData[index])
+          }
+        }
+      }
+      // object를 키 이름으로 정렬하여 반환
+      // state.recommend = function sortObject(o)
+      // {
+      //   var sorted = {},
+      //   key, a = [];
+      //   // 키이름을 추출하여 배열에 집어넣음
+      //   for (key in o) {
+      //       if (o.hasOwnProperty(key)) a.push(key);
+      //   }
+      //   // 키이름 배열을 정렬
+      //   a.sort();
+      //   // 정렬된 키이름 배열을 이용하여 object 재구성
+      //   for (key=0; key<a.length; key++) {
+      //       sorted[a[key]] = o[a[key]];
+      //   }
+      //   return sorted;
+      // }
     },
     LOGOUT : function(state){
       localStorage.removeItem('jwt')
