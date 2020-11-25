@@ -31,7 +31,7 @@ def movie_list_create(request):
         return Response(serializer.data)
     else:
         # 영화 data 만들기
-        for curPage in range(1, 3):
+        for curPage in range(34, 35):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -92,7 +92,9 @@ def movie_list_create(request):
                             photo = people.find("img")["src"]
                             if photo[:4] == 'data': photo = '이미지 없음'
                             serializer = PeopleSerializer(data={"name": name, "role": role, "photo": photo})
+                            print('시리얼라이저 직전')
                             if serializer.is_valid(raise_exception=True):
+                                print('시리얼라이저 벨리드')
                                 serializer.save()
 
                         # 영화와 인물 ManytoMany 매칭
@@ -157,6 +159,11 @@ def people_list(request):
     peoples = People.objects.all()
     serializer = PeopleSerializer(peoples, many=True)
     return Response(serializer.data)
+
+
+# 영화인, 영화 테이블 보내기
+# def people_movies(request):
+
 
 
 # 리뷰 C

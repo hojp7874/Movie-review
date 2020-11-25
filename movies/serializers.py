@@ -4,10 +4,11 @@ from .models import Movie, Review, People, UserMovieScore, Comment
 
 
 class PeopleSerializer(serializers.ModelSerializer):
+    movies = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = People
-        fields = ["name", "role", "photo"]
+        fields = ["name", "role", "photo", "movies"]
 
     
 class MovieSerializer(serializers.ModelSerializer):
@@ -21,10 +22,11 @@ class MovieSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    like_users = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Review
-        fields = ["id", "user", "movie", "title", "content"]
+        fields = ["id", "user", "movie", "title", "content", "like_users"]
 
 
 class UserMovieScoreSerializer(serializers.ModelSerializer):
