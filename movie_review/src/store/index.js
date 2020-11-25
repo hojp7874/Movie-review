@@ -15,10 +15,8 @@ export default new Vuex.Store({
   },
   getters: {
     movieList:function(){
-      return this.state.movies.forEach((obj)=>{
-        return obj.movieNm
-      })
-    }
+      return this.state.movies.map(a=>a.movieNm)
+      }
   },
   mutations: {
     GET_MOVIES: function (state, movieData) {
