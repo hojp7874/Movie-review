@@ -31,7 +31,7 @@ def movie_list_create(request):
         return Response(serializer.data)
     else:
         # 영화 data 만들기
-        for curPage in range(34, 35):
+        for curPage in range(12, 13):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -56,7 +56,7 @@ def movie_list_create(request):
                 try:
                     movie['posterSrc'] = str(soup.select("a.thumb._item")[0].find('img')['src'])
                 except:
-                    pass
+                    continue
 
                 # 관객 수 추가
                 try:
