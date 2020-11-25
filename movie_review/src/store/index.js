@@ -12,6 +12,7 @@ export default new Vuex.Store({
     crew:[],
     users:[],
     search:[],
+    moviesNm: [],
   },
   getters: {
     movieList:function(){
@@ -24,6 +25,8 @@ export default new Vuex.Store({
     GET_MOVIES: function (state, movieData) {
       state.movies = movieData
       state.search = movieData
+      state.moviesNm = movieData.map(a=>a.movieNm)
+      console.log(state.moviesNm)
     },
 
     LOGOUT : function(){

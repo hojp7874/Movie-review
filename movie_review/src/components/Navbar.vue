@@ -14,18 +14,18 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
-              <b-form-input
-                v-model="searchWord"
-                size="sm"
-                class="mr-sm-2"
-                placeholder="검색어를 입력하세요"
-                @keypress.enter="search"
-              >
-              </b-form-input>
-                <!-- <ul v-show="searchWord.length">
-                  <li v-for="(wd,idx) in candidate" :key='idx'></li>
-                </ul> -->
-              <b-button size="sm" class="my-2 my-sm-0" @click="search">🔍</b-button>
+            <vue-bootstrap-typeahead
+              :data="moviesNm"
+              v-model="searchWord"
+              size="sm"
+              class="mr-sm-2"
+              placeholder="검색어를 입력하세요"
+              @keypress.enter="search"
+            />
+              <!-- <ul v-show="searchWord.length">
+                <li v-for="(wd,idx) in candidate" :key='idx'></li>
+              </ul> -->
+            <b-button size="sm" class="my-2 my-sm-0" @click="search">🔍</b-button>
           </b-nav-form>
 
           <b-nav-item-dropdown right>
@@ -46,6 +46,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
 
 export default {
   name: "Navbar",
@@ -57,10 +58,12 @@ export default {
     }
   },
   components : {
+    VueBootstrapTypeahead
   },
     computed : {
     ...mapState([
-      'loginStatus'
+      'loginStatus',
+      'moviesNm',
     ]),
     ...mapGetters([
       'movieList'
