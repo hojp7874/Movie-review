@@ -80,23 +80,23 @@
                   <b-button v-b-toggle.collapse-3 variant="primary" class="m-1">리뷰 작성</b-button>
                   <span>
                     <b-button-group>
-                      <b-button :class="{bgON : btn1}" @click='scoreSelect(movie.movieCd,1)' variant="outline-primary">
+                      <b-button :class="{bgON : btn1}" @click='scoreSelect(movie.movieCd,1)' variant="outline-danger">
                         <b-icon icon="emoji-angry"></b-icon>
                         <!-- <p>최악이에요!</p> -->
                       </b-button>
-                      <b-button :class="{bgON : btn2}" @click='scoreSelect(movie.movieCd,2)' variant="outline-primary">
+                      <b-button :class="{bgON : btn2}" @click='scoreSelect(movie.movieCd,2)' variant="outline-danger">
                         <b-icon icon="emoji-frown"></b-icon>
                         <!-- <p>그저 그래요</p> -->
                       </b-button>
-                      <b-button :class="{bgON : btn3}" @click='scoreSelect(movie.movieCd,3)' variant="outline-primary">
+                      <b-button :class="{bgON : btn3}" @click='scoreSelect(movie.movieCd,3)' variant="outline-danger">
                         <b-icon icon="emoji-neutral"></b-icon>
                         <!-- <p>볼만해요</p> -->
                       </b-button>
-                      <b-button :class="{bgON : btn4}" @click='scoreSelect(movie.movieCd,4)' variant="outline-primary">
+                      <b-button :class="{bgON : btn4}" @click='scoreSelect(movie.movieCd,4)' variant="outline-danger">
                         <b-icon icon="emoji-smile"></b-icon>
                         <!-- <p>재밌어요</p> -->
                       </b-button>
-                      <b-button :class="{bgON : btn5}" @click='scoreSelect(movie.movieCd,5)' variant="outline-primary">
+                      <b-button :class="{bgON : btn5}" @click='scoreSelect(movie.movieCd,5)' variant="outline-danger">
                         <b-icon icon="emoji-heart-eyes"></b-icon>
                         <!-- <p>최고에요!</p> -->
                       </b-button>
@@ -127,8 +127,8 @@
                     :key='idx'
                     :review='review'
                   >
-                    <button @click='reviewLike(review,false)' v-if="review.like_users.includes(nowUser)"><b-icon icon="heart-fill" style="color : red"></b-icon></button>
-                    <button @click='reviewLike(review,true)' v-else><b-icon icon="heart" style="color : red"></b-icon></button>
+                    <div v-if="review.like_users.includes(nowUser)"><button class='heartbutton' @click='reviewLike(review,false)' ><b-icon icon="heart-fill" style="color : red"></b-icon></button><span>  좋아요 취소</span></div>
+                    <div v-else><button class='heartbutton' @click='reviewLike(review,true)'><b-icon icon="heart" style="color : red"></b-icon></button><span>  좋아요</span></div>
                     <p>{{review.like_users.length}}명이 좋아합니다.</p>
                     <p>작성자 : {{review.user.username}}</p>
                     <p>제목 : {{review.title}}</p>
@@ -160,7 +160,6 @@ export default {
         defaultImg: 'https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png',
         mvUrl:'',
         thumbnail :'',
-        reviews:[],
         score :[],
         reviewTitle:'',
         reviewContent : '',
@@ -172,10 +171,11 @@ export default {
       }
   },
   computed:{
-    ...mapState({
-      crew : 'crew',
-      users : 'users',
-    }),
+    ...mapState([
+      'crew',
+      'users',
+      'reviews',
+    ]),
     stars : function(){
       if(!this.score.length){
         return [0.00, '☆'.repeat(5)]
@@ -327,27 +327,22 @@ export default {
         if(ans){
           this.$router.push({name:'Login'})
         }
+      }else{
+          const config = this.setToken()
+          // VueJwtDecode.decode(localStorage.getItem('jwt'))
+          const user2 =this.getUsername()
+          const item = {
+            movie: code,
+            title : this.reviewTitle,
+            content : this.reviewContent,
+            user : {username : user2}
+          }
+          const data = [item,config]
+          this.$store.dispatch('makeReview',data)
+          this.$store.dispatch('getReviews',code)
       }
-      const config = this.setToken()
-      // VueJwtDecode.decode(localStorage.getItem('jwt'))
-      const user2 =this.getUsername()
-      const item = {
-        movie: code,
-        title : this.reviewTitle,
-        content : this.reviewContent,
-        user : {username : user2}
-
-      }
-      axios.post(`${SERVER_URL}/movies/review_create/`,item,config)
-        .then(() => {
-          this.reviews.push(item)
-          this.reviewContent=''
-          this.reviewTitle=''
-        })
-        .catch((err)=>{
-          console.log(err)
-        })            
-      
+      this.reviewContent=''
+      this.reviewTitle=''
     },
     reviewLike:function(review,bool){
       const user2 =this.getUsername()
@@ -385,17 +380,8 @@ export default {
     this.$emit('getImgUrl',this.movie.posterSrc)
     this.$emit('getCrew',this.movie.movieCd)
     const code=this.movie.movieCd
-    axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
-      .then((res) => {
-        if(res.data=== []){
-          this.reviews =[]
-        }else{
-          this.reviews = res.data
-        }
-      })
-      .catch((err)=>{
-        console.log(err)
-      })        
+    this.$store.dispatch('getReviews',code)
+
     axios.get(`${SERVER_URL}/movies/${code}/movie_score_list/`)
       .then((res) => {
         const movieScore = res.data
@@ -474,6 +460,10 @@ export default {
   color: white;
   transform: rotateY(180deg);
 }
+.flip-card-back:hover{
+  border: #ef9a9a 1px solid;
+}
+
 .flip-card-front img {
   width: 100%;
   height: 100%;
@@ -512,11 +502,15 @@ b-button>p{
   font-size: 0.5em;
 }
 .bgON{
-  background: #ffc107;
-  color: #212529;
+  background: #FE1515;
+  color:white;
 }
 .heart{
   background: none;
   border: none;
+}
+.heartbutton{
+  border: none;
+  background: none;
 }
 </style>

@@ -20,6 +20,7 @@ export default new Vuex.Store({
     genresState :[],
     filterdMovie:[],
     recommend: [],
+    reviews : [],
   },
   getters: {
     movieList:function(){
@@ -102,6 +103,12 @@ export default new Vuex.Store({
         return list.includes(movie.repGenreNm) 
       })
       state.filterdMovie = filtered
+    },
+    MAKE_REVIEW : function(){
+      console.log('리뷰가 작성되었습니다.')
+    },
+    GET_REVIEWS : function(state,data){
+      state.reviews = data
     }
     },
     actions: {
@@ -146,6 +153,31 @@ export default new Vuex.Store({
     },
     stateChange : function({commit},idx){
       commit('STATE_CHANGE',idx)
+    },
+    makeReview : function({commit},data){
+      axios.post(`${SERVER_URL}/movies/review_create/`,data[0],data[1])
+        .then(() => {
+          commit('MAKE_REVIEW')
+        })
+        .catch((err)=>{
+          console.log(err)
+        })
+    },
+    getReviews:function({commit},code){
+      axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
+      .then((res) => {
+        if(res.data=== []){
+          const data =[]
+          commit('GET_REVIEWS', data)
+        }else{
+          const data = res.data
+          commit('GET_REVIEWS', data)
+        }
+      })
+      .catch((err)=>{
+        console.log(err)
+      })              
     }
   },
-})
+  }
+)
