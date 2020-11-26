@@ -136,9 +136,11 @@ def movie_score_list(request, movie_pk):
 
 # 영화평점 싹다 가져오기
 @api_view(['GET'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 def movie_score(request):
     if request.method == 'GET':
-        scores = UserMovieScore.objects.all()
+        scores = UserMovieScore.objects.filter(user=request.user)
         serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
 
