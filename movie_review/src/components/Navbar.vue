@@ -7,7 +7,8 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#"><router-link class="whitefont" :to="{ name: 'Allmovielist' }">영화 목록</router-link></b-nav-item>
+          <b-nav-item><router-link class="whitefont" :to="{ name: 'Allmovielist' }">영화 목록</router-link></b-nav-item>
+          <b-nav-item><router-link class="whitefont" :to="{ name: 'Likemovielist' }">좋아요 한 영화</router-link></b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
