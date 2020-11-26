@@ -1,5 +1,5 @@
 <template>
-  <div id='Main'>
+  <div id='Main' class="p-0">
     <Navbar />
     <br>
     <Recommended />
@@ -60,7 +60,7 @@ export default {
   height:100vh;
   position: relative;
   background-color: #000;
-
+  
 }
 
 </style>

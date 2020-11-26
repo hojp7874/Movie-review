@@ -8,7 +8,7 @@
         v-model="slide"
         :autoplay="true"
         :autoplay-timeout="2500"
-        class="col-12"
+        class="col-12 p-0"
         :height='400'
       >
         <slide
@@ -20,7 +20,7 @@
           <MovieCard
             :movie='movie'
             :idx='idx'
-            class="col-12 p-0 m-0"
+            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 p-0 m-0"
           />
         </slide>
       </carousel-3d>
