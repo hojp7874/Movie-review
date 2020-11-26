@@ -21,8 +21,7 @@ export default new Vuex.Store({
     filterdMovie:[],
     recommend: [],
     reviews : [],
-    likemovies: [],
-    userData: [],
+    scoreData: [],
   },
   getters: {
     movieList:function(){
@@ -77,8 +76,8 @@ export default new Vuex.Store({
     GET_USERS : function(state,data){
       state.users = data
     },
-    USER_DATA : function(state, data){
-      state.userData = data
+    SCORE_DATA : function(state, data){
+      state.scoreData = data
     },
     SEARCH: function (state, searchWord) {
       state.search = state.movies.filter(function (data) {
@@ -158,11 +157,17 @@ export default new Vuex.Store({
           console.log(err)
         })      
     },
-    userData:function({commit}){
-      axios.get(`${SERVER_URL}/accounts/profile/`)
+    scoreData:function({commit}){
+      const token = localStorage.getItem('jwt')
+      const config = {
+        headers: {
+          Authorization: `JWT ${token}`
+        }
+      }
+      axios.get(`${SERVER_URL}/movies/movie_score/`,config)
         .then((res) => {
-          const user = res.data
-          commit('USER_DATA', user)
+          const data = res.data
+          commit('SCORE_DATA', data)
         })
         .catch((err)=>{
           console.log(err)

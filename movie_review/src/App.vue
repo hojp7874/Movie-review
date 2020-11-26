@@ -20,7 +20,7 @@ export default {
     this.$store.dispatch('getMovies')
     this.$store.dispatch('getMovieCrew')
     this.$store.dispatch('getUser')
-    // this.$store.dispatch('userData')
+    // this.$store.dispatch('scoreData')
     const token = localStorage.getItem('jwt')
     if(token){
       this.login = true

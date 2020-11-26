@@ -24,7 +24,7 @@
           <!-- <p>{{score.length}}개의 점수 평가</p> -->
           <p>리뷰 {{Object.keys(reviews).length}}개</p>
           <br>
-          <p>[평점]</p>
+          <p>[총점]</p>
           <p><b-icon icon="emoji-angry" style="color : brown"></b-icon><span> : {{stars[2]}}</span></p>
           <p><b-icon icon="emoji-frown" style="color : brown"></b-icon><span> : {{stars[3]}}</span></p>
           <p><b-icon icon="emoji-neutral" style="color : brown"></b-icon><span> : {{stars[4]}}</span></p>
@@ -38,15 +38,15 @@
           <div class="d-block">
             <div id='modalContent'>
               <div>
-                <p style='font-weight : 600; font-size:150%;'>영화 예고편</p>
+                <div class='mb-4'><p style='font-weight : 600; font-size:150%;'>영화 예고편</p></div>
                 <iframe :src="mvUrl" frameborder="0" width=100% height='470' allowfullscreen></iframe>
               </div><hr class="my-3">
               <div class="container d-flex flex-column">
                 <div class="d-flex flex-row">
                   <div class="col-3 text-center">
                     <p class="mb-1">
-                      <span> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
-                      <span> {{movie.prtdYear}}</span>
+                      <span style='font-weight : 600;'> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
+                      <span style='font-weight : 600;'> {{movie.prtdYear}}</span>
                     </p>
                     <img v-if="!movie.posterSrc" src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
                     <img v-else :src="movie.posterSrc" alt="">
@@ -61,7 +61,7 @@
                     </span>
                   </div>
                 </div><hr class="my-3">
-                <span class='txtcenter' style=''>제작진</span>
+                <div class='mb-4 txtcenter'><span style=''>제작진</span></div>
                 <div class="container d-flex flex-row flex-wrap">
                   <div
                     v-for="(person, idx) in movie.peoples"
@@ -440,6 +440,11 @@ export default {
   height: 100%;
   padding: 0;
   display : flex;
+  background-color: #fffcf4ef;
+  border-radius: 0.5rem;
+  padding: 0 !important;
+  border: none;
+  box-sizing: border-box;
 }
 * {
   margin: 0;
@@ -457,6 +462,7 @@ export default {
   transform-style: preserve-3d;
   transition: transform 0.7s;
   padding: 0;
+  
 }
 .flip-card-front,
 .flip-card-back {
@@ -475,7 +481,7 @@ export default {
   transform: rotateY(180deg);
 }
 .flip-card-back:hover{
-  border: #ef9a9a 1px solid;
+  border: #212121 1px solid;
 }
 
 .flip-card-front img {
@@ -495,14 +501,6 @@ export default {
 }
 .flip-card-back>:nth-child(2){
   height: 80%;
-}
-#show-btn{
-  height: 10%;
-  background: #757575;
-  border: 0 none;
-  border-radius: 0.5rem;
-  color: white;
-  text-align: center;
 }
 /* #modalContent{
   display: flexbox;

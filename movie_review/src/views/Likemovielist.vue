@@ -2,10 +2,10 @@
   <div id='Likemovielist'>
     <Navbar />
     <br>
-    <h2>좋아요 한 영화</h2>
+    <h2>평가한 영화</h2>
     <!-- <GenreMovie /> -->
     <MovieList 
-      :movies="likemovies"
+      :movies="likeMovies"
     />
   </div>
 </template>
@@ -19,6 +19,10 @@ import { mapState } from 'vuex'
 
 export default {
   name : 'Likemovielist',
+  data : function(){
+    return{
+    }
+  },
   components : {
     Navbar,
     MovieList,
@@ -27,8 +31,17 @@ export default {
   computed : {
       ...mapState([
           'movies',
-          'likemovies'
+          'scoreData',
       ]),
+      likeMovies : function(){
+        const likeSet =  this.scoreData.map(a=>a.movie)
+        return this.movies.filter((movie)=>{
+          return likeSet.includes(movie.movieCd)
+        })
+      }
+  },
+  created : function(){
+    this.$store.dispatch('scoreData')
   }
 }
 </script>

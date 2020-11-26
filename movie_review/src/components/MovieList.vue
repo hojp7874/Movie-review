@@ -63,7 +63,8 @@ export default {
   height: 45vh;
   border-radius: 0.5rem;
   display: flex;
-  flex-flow : row wrap
+  flex-flow : row wrap;
+  
 }
 
 

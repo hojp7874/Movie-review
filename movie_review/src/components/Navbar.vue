@@ -8,7 +8,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item><router-link class="whitefont" :to="{ name: 'Allmovielist' }">영화 목록</router-link></b-nav-item>
-          <b-nav-item><router-link class="whitefont" :to="{ name: 'Likemovielist' }">좋아요 한 영화</router-link></b-nav-item>
+          <b-nav-item><router-link @click='requireLogin' class="whitefont" :to="{ name: 'Likemovielist' }">평가한 영화</router-link></b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -35,8 +35,9 @@
               <em class="whitefont">마이페이지</em>
             </template>
             <b-dropdown-item v-show="loginStatus" @click='logout'>로그아웃</b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }">회원가입</router-link></b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }">로그인</router-link></b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }"><b-icon icon="person-fill"></b-icon><span>  회원가입</span></router-link></b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }"><b-icon icon="power" aria-hidden="true"></b-icon><span>  로그인</span></router-link></b-dropdown-item>
+
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -90,6 +91,11 @@ export default {
       this.$store.dispatch('search', this.searchWord)
       this.$router.push({name : 'SearchedList'})
     },
+    requireLogin : function(){
+      if(!localStorage.getItem('jwt')){
+        alert('로그인이 필요한 서비스입니다.')
+      }
+    }
   },
   mounted : function(){
       if(localStorage.getItem('jwt')){
