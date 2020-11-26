@@ -1,6 +1,6 @@
 <template>
   <div id="MovieList">
-    <div class="flip-card-container p-0 col-12">
+    <div class="flip-card-container p-0">
       <MovieCard
         v-for="(movie,idx) in movies"
         :key="idx"
