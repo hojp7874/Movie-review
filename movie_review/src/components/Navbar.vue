@@ -34,9 +34,9 @@
             <template #button-content>
               <em class="whitefont">마이페이지</em>
             </template>
-            <b-dropdown-item v-show="loginStatus" @click='logout'>로그아웃</b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }"><b-icon icon="person-fill"></b-icon><span>  회원가입</span></router-link></b-dropdown-item>
-            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }"><b-icon icon="power" aria-hidden="true"></b-icon><span>  로그인</span></router-link></b-dropdown-item>
+            <b-dropdown-item v-show="loginStatus" @click='logout'><b-icon class='colblack' icon="power" aria-hidden="true"></b-icon><span class='colblack'>로그아웃</span></b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }"><b-icon class='colblack' icon="person-fill"></b-icon><span class='colblack'> 회원가입</span></router-link></b-dropdown-item>
+            <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }"><b-icon  class='colblack' icon="power" aria-hidden="true"></b-icon><span class='colblack'> 로그인</span></router-link></b-dropdown-item>
 
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -141,5 +141,16 @@ router-link:hover{
 .whitefont:hover{
   color:white;
   font-style: none;
+}
+div.list-group > a:hover{
+  background-color:#f5f5f5;
+  border: none;
+  color: black;
+}
+.colblack{
+  color: black;
+}
+router-link:hover{
+  background-color:#c2c2c2;
 }
 </style>
