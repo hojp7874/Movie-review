@@ -8,7 +8,6 @@
         pill
         :class="{myclass : genresState[Number(idx)]}"
         v-on:click="clicked(idx)"
-        
       >
         <span :class="{myclass : genresState[Number(idx)]}" >{{ btn }}</span>
       </b-button>

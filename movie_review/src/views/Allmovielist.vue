@@ -3,15 +3,17 @@
     <Navbar />
     <br>
     <h2>모든 영화</h2>
-    <MovieList 
+    <GenreMovie />
+    <!-- <MovieList 
       :movies="movies"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar.vue'
-import MovieList from '@/components/MovieList.vue'
+// import MovieList from '@/components/MovieList.vue'
+import GenreMovie from '@/components/GenreMovie.vue'
 import { mapState } from 'vuex'
 
 
@@ -19,7 +21,8 @@ export default {
   name : 'Allmovielist',
   components : {
     Navbar,
-    MovieList
+    // MovieList,
+    GenreMovie
   },
   computed : {
       ...mapState([

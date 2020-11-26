@@ -4,7 +4,7 @@
     <br>
     <Recommended />
     <br><br>
-    <GenreMovie />
+    <!-- <GenreMovie /> -->
     <!-- <MovieList 
       :movies="movies"
     /> -->
@@ -16,7 +16,7 @@ import { mapState } from 'vuex'
 import Navbar from '@/components/Navbar.vue'
 import Recommended from '@/components/Recommended.vue'
 // import MovieList from '@/components/MovieList.vue'
-import GenreMovie from '@/components/GenreMovie.vue'
+// import GenreMovie from '@/components/GenreMovie.vue'
 
 export default {
   name: 'Main',
@@ -24,7 +24,7 @@ export default {
     Navbar,
     Recommended,
     // MovieList,
-    GenreMovie,
+    // GenreMovie,
   },
   computed: {
     ...mapState([
