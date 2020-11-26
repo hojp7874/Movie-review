@@ -21,6 +21,8 @@ export default new Vuex.Store({
     filterdMovie:[],
     recommend: [],
     reviews : [],
+    likemovies: [],
+    userData: [],
   },
   getters: {
     movieList:function(){
@@ -75,6 +77,9 @@ export default new Vuex.Store({
     GET_USERS : function(state,data){
       state.users = data
     },
+    USER_DATA : function(state, data){
+      state.userData = data
+    },
     SEARCH: function (state, searchWord) {
       state.search = state.movies.filter(function (data) {
         return data.movieNm.includes(searchWord)
@@ -107,6 +112,10 @@ export default new Vuex.Store({
       }else{
         state.filterdMovie = filtered
       }
+      state.filterdMovie = filtered
+      // if (filtered[1] == null) {
+      //   state.filterdMovie = state.movies
+      // }
     },
     MAKE_REVIEW : function(){
       console.log('리뷰가 작성되었습니다.')
@@ -148,6 +157,16 @@ export default new Vuex.Store({
         .catch((err)=>{
           console.log(err)
         })      
+    },
+    userData:function({commit}){
+      axios.get(`${SERVER_URL}/accounts/profile/`)
+        .then((res) => {
+          const user = res.data
+          commit('USER_DATA', user)
+        })
+        .catch((err)=>{
+          console.log(err)
+        })
     },
     search: function ({commit}, searchWord) {
       commit('SEARCH', searchWord)
