@@ -1,7 +1,7 @@
 <template>
   <div id="navbar">
     <b-navbar toggleable="lg">
-      <b-navbar-brand @click="toMain" href="#">🎬</b-navbar-brand>
+      <b-navbar-brand @click="toMain" href="#"><span id='ant'>늑대와 개미핥기</span></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -107,6 +107,9 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap');
+
+
 #navbar {
   width: 100vw;
   z-index: 1;
@@ -114,7 +117,11 @@ export default {
   background: none;
   border-bottom: darkgray 0.1em solid;
 }
-
+#ant{
+  font-family: 'East Sea Dokdo', cursive;
+  color: white;
+  font-size: 2rem;
+}
 .navbar-light .navbar-nav .nav-link:link,
 .navbar-light .navbar-nav .nav-link:visited,
 .navbar-light .navbar-nav .nav-link:hover {

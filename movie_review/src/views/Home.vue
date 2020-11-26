@@ -1,9 +1,9 @@
 <template>
   <div id="Home">
     <div id="text">
-      <h1>영화 이야기🎬</h1>
-      <h5>영화를 주제로 사람들과 소통할 수 있는 페이지입니다.</h5>
-      <h5>내가 본 영화에 대한 평가를 남기고, 다른 평가를 공유하세요</h5>
+      <p id='ant2'>늑대와 개미핥기</p>
+      <h5>영화를 주제로 </h5>
+      <h5>사람들과 소통할 수 있는 페이지입니다.</h5>
       <transition name="fade">
         <b-button
           variant="outline-white"
@@ -52,6 +52,7 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap');
 /* @import url('@/assets/bgi.jpg'); */
 * {
   margin: 0;
@@ -102,9 +103,15 @@ h1 {
 }
 button {
   margin: 2rem 0;
+
 }
 button:hover {
   background: white;
   color: black;
+}
+#ant2{
+  font-family: 'East Sea Dokdo', cursive;
+  color: white;
+  font-size: 5rem;
 }
 </style>

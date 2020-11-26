@@ -2,7 +2,7 @@
   <div id='Allmovielist'>
     <Navbar />
     <br>
-    <h2>모든 영화</h2>
+    <h2 class='m-5'>모든 영화</h2>
     <GenreMovie />
     <!-- <MovieList 
       :movies="movies"
@@ -51,11 +51,12 @@ export default {
   position: relative;
   background-color: #000;
 }
-h2 {
+h2{
   text-align: center;
   color: White;
-  font-weight: 700;
+  font-weight: 600;
   margin: 3% 0 3% 0;
-    font-size: 2rem;
+  font-size: 2rem;
+
 }
 </style>

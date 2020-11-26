@@ -2,7 +2,7 @@
   <div id='Likemovielist'>
     <Navbar />
     <br>
-    <h2>평가한 영화</h2>
+    <h2 class='m-5'>평가한 영화</h2>
     <!-- <GenreMovie /> -->
     <MovieList 
       :movies="likeMovies"

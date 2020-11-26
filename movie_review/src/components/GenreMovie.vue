@@ -1,7 +1,7 @@
 <template>
   <div id='genreMovie'>
-    <div class='text-center'>
-    <b-button-group size="sm" >
+    <div class='text-center d-flex justify-content-center flex-wrap'>
+    <b-button-group size="sm" class=''>
       <b-button
         v-for="(btn, idx) in genres"
         :key="idx"

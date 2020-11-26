@@ -33,7 +33,7 @@
         </div>
         <b-modal :id="'bv-modal-'+idx" hide-footer size='xl'>
           <template #modal-title>
-            <div class='txtcenter'>{{ movie.movieNm }}  <span style="color :gold;">{{stars[1]}}</span></div>
+            <div class='txtcenter'>{{ movie.movieNm }}  <span style="color :#c7b800;">{{stars[1]}}</span></div>
           </template>
           <div class="d-block">
             <div id='modalContent'>
@@ -42,7 +42,7 @@
                 <iframe :src="mvUrl" frameborder="0" width=100% height='470' allowfullscreen></iframe>
               </div><hr class="my-3">
               <div class="container d-flex flex-column">
-                <div class="d-flex flex-row">
+                <div class="d-flex flex-row flex-wrap">
                   <div class="col-3 text-center">
                     <p class="mb-1">
                       <span style='font-weight : 600;'> {{ movie.genreAlt }} | {{movie.nationAlt}}</span>
@@ -52,7 +52,7 @@
                     <img v-else :src="movie.posterSrc" alt="">
                     <!-- <title>{{ movie.movieNm }}</title> -->
                   </div>
-                  <div class="col-9 d-flex flex-column">
+                  <div class="col-lg-9 col-12 d-flex flex-column">
                     <p class="mb-1 " style='font-weight : 600; font-size:150%;'>영화 줄거리</p>
                     <span class="flex-fill d-flex flex-row">
                       <p class="align-self-center">
@@ -79,9 +79,9 @@
                 </div><hr class="my-3">
                 <!-- 리뷰작성 -->
                 <div class="d-flex justify-content-between align-items-center">
-                  <b-button v-b-toggle.collapse-3 variant="info" class="m-1">리뷰 작성</b-button>
+                  <b-button v-b-toggle.collapse-3 variant="outline-dark" class="m-1">리뷰 작성</b-button>
                   <span>
-                    <b>평점을 남겨주세요 </b>
+                    <b>이 영화에 대한 평점을 남겨주세요 :  </b>
                     <b-button-group>
                       <b-button :class="{bgON : btn1}" @click='scoreSelect(movie.movieCd,1)' variant="outline-danger">
                         <b-icon icon="emoji-angry"></b-icon>
@@ -118,33 +118,38 @@
                       <b-input-group prepend="내용">
                         <b-form-textarea v-model.trim="reviewContent" id="" cols="30" rows="4" type="text"></b-form-textarea>
                       </b-input-group>
-                      <b-button variant="info" @click='makeReview(movie.movieCd)' type="submit">리뷰쓰기</b-button>
+                      <div class='d-flex justify-content-end'>
+                        <b-button variant="outline-dark" class='mybtn'  @click='makeReview(movie.movieCd)' type="submit">리뷰쓰기</b-button>
+                      </div>
                     </div>
                   </form>
                 </b-card>
               </b-collapse>
+              <hr>
+              <div class='mt-4'>
+                <p class='txtcenter m-4'>리뷰 목록</p>
+              </div>
               <ul>
-                <span class='txtcenter' style=''>리뷰 목록</span>
                 <li
                   v-for=" (review,idxx) in reviews"
                   :key='idxx'
                   :review='review'
                 >
                   <hr>
-                  <b-card-body v-b-toggle="'collapse-' + idxx" class=" p-2 d-flex flex-row justify-content-between">
+                  <b-card-body v-b-toggle="'collapse-' + idxx" class=" p-2 d-flex flex-row justify-content-between reviewHover">
 
-                    <b>{{review.title}}</b>
+                    <b><span> 글 제목 : </span>{{review.title}}</b>
                     <!-- <p>작성자 : {{review.user.username}}</p> -->
                     <small style="text-align: right">{{review.like_users.length}}명이 좋아합니다.</small>
                   </b-card-body>
                   <b-collapse :id="'collapse-'+idxx" class="mt-2">
                     <b-card>
                       <div class="d-flex justify-content-between">
-                        <p>작성자 : {{review.user.username}}</p>
+                        <p><span style='font-weight :600;'>작성자 </span>: {{review.user.username}}</p>
                         <div v-if="review.like_users.includes(nowUser)"><button class='heartbutton' @click='reviewLike(review,false)' ><b-icon icon="heart-fill" style="color : red"></b-icon></button></div>
                         <div v-else><button class='heartbutton' @click='reviewLike(review,true)'><b-icon icon="heart" style="color : red"></b-icon></button></div>
                       </div>
-                      <p>내용: {{review.content}}</p>
+                      <p><span style='font-weight :600;'>내용</span>: {{review.content}}</p>
                     </b-card>
                   </b-collapse>
                   <hr>
@@ -152,7 +157,7 @@
               </ul>
             </div>
           </div>
-          <b-button class="mt-3 btn-info" block @click="$bvModal.hide(`bv-modal-${idx}`)">닫기</b-button>
+          <b-button variant="secondary" class="mt-3" block @click="$bvModal.hide(`bv-modal-${idx}`)">닫기</b-button>
         </b-modal>
       </div>
     </div>
@@ -452,11 +457,8 @@ export default {
   height: 100%;
   padding: 0;
   display : flex;
-  background-color: #fffcf4ef;
-  border-radius: 0.5rem;
-  padding: 0 !important;
-  border: none;
-  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0);
+
 }
 * {
   margin: 0;
@@ -526,7 +528,7 @@ b-button>p{
   font-size: 0.5em;
 }
 .bgON{
-  background: #dd6262;
+  background: #d50000;
   color:white;
 }
 .heart{
@@ -544,5 +546,12 @@ b-button>p{
 }
 ul{
   list-style: none;
+}
+.mybtn:hover{
+  background: none;
+  color : black;
+}
+.reviewHover:hover{
+  background: #fffde7;
 }
 </style>
