@@ -126,8 +126,8 @@
                   :key='idx'
                   :review='review'
                 >
-                  <button @click='reviewLike(review,false)' v-if="review.like_users.includes(nowUser)"><b-icon icon="heart-fill" style="color : red"></b-icon></button>
-                  <button @click='reviewLike(review,true)' v-else><b-icon icon="heart" style="color : red"></b-icon></button>
+                  <button class='heart' @click='reviewLike(review,false)' v-if="review.like_users.includes(nowUser)"><b-icon icon="heart-fill" style="color : red"></b-icon></button>
+                  <button class='heart' @click='reviewLike(review,true)' v-else><b-icon icon="heart" style="color : red"></b-icon></button>
                   <p>{{review.like_users.length}}명이 좋아합니다.</p>
                   <p>작성자 : {{review.user.username}}</p>
                   <p>제목 : {{review.title}}</p>
@@ -513,5 +513,9 @@ b-button>p{
 .bgON{
   background: #ffc107;
   color: #212529;
+}
+.heart{
+  background: none;
+  border: none;
 }
 </style>
