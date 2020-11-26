@@ -12,4 +12,5 @@ urlpatterns = [
     path('token-refresh/', verify_jwt_token),
 
     path('user_update_delete/', views.user_update_delete),
+    path('profile/', views.profile),
 ]

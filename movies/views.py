@@ -31,7 +31,7 @@ def movie_list_create(request):
         return Response(serializer.data)
     else:
         # 영화 data 만들기
-        for curPage in range(12, 13):
+        for curPage in range(1, 50):
             # 영화인 목록 url 저장
             um = URLMaker_kobis()
             url = um.get_url('movie', 'searchMovieList')
@@ -130,6 +130,15 @@ def movie_score_create(request):
 def movie_score_list(request, movie_pk):
     if request.method == 'GET':
         scores = UserMovieScore.objects.filter(movie=movie_pk)
+        serializer = UserMovieScoreSerializer(scores, many=True)
+        return Response(serializer.data)
+
+
+# 영화평점 싹다 가져오기
+@api_view(['GET'])
+def movie_score(request):
+    if request.method == 'GET':
+        scores = UserMovieScore.objects.all()
         serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
 

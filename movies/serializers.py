@@ -13,6 +13,7 @@ class PeopleSerializer(serializers.ModelSerializer):
     
 class MovieSerializer(serializers.ModelSerializer):
     peoples = PeopleSerializer(many=True, read_only=True)
+    reviews = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     # peoples = serializers.PrimaryKeyRelatedField(queryset=People.objects.all(), many=True)
 
     class Meta:

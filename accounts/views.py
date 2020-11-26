@@ -1,10 +1,23 @@
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from .models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from .serializers import UserSerializer
 from django.contrib.auth import get_user_model
+
+
+@api_view(['GET'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    User = get_user_model()
+    person = get_object_or_404(User, username=request.user)
+    serializer = UserSerializer(person)
+    return Response(serializer.data)
+
 
 
 # 유저정보 가져오기
