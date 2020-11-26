@@ -18,26 +18,27 @@
       >
         <div class="text-center">
           <h3 class="mt-5 mb-2 text-dark">{{ movie.movieNm }}</h3>
-          <p>{{ movie.genreAlt }} | {{movie.nationAlt}}</p>
+          <p>{{ movie.genreAlt }} |{{movie.nationAlt}}</p>
           <p>{{movie.openDt}} {{movie.prdtStatNm}}</p>
           <p>평점: {{stars[1]}}</p>
           <!-- <p>{{score.length}}개의 점수 평가</p> -->
           <p>리뷰 {{Object.keys(reviews).length}}개</p>
-          <p>내 평점: </p>
-          <b-icon icon="emoji-angry" style="color : brown"></b-icon>
-          <b-icon icon="emoji-frown" style="color : brown"></b-icon>
-          <b-icon icon="emoji-neutral" style="color : brown"></b-icon>
-          <b-icon icon="emoji-smile" style="color : brown"></b-icon>
-          <b-icon icon="emoji-heart-eyes" style="color : brown"></b-icon>
+          <br>
+          <p>[평점]</p>
+          <p><b-icon icon="emoji-angry" style="color : brown"></b-icon><span> : {{stars[2]}}</span></p>
+          <p><b-icon icon="emoji-frown" style="color : brown"></b-icon><span> : {{stars[3]}}</span></p>
+          <p><b-icon icon="emoji-neutral" style="color : brown"></b-icon><span> : {{stars[4]}}</span></p>
+          <p><b-icon icon="emoji-smile" style="color : brown"></b-icon><span> : {{stars[5]}}</span></p>
+          <p><b-icon icon="emoji-heart-eyes" style="color : brown"></b-icon><span> : {{stars[6]}}</span></p>
         </div>
         <b-modal :id="'bv-modal-'+idx" hide-footer size='xl'>
           <template #modal-title>
-            <div>{{ movie.movieNm }} | {{stars[1]}}</div>
+            <div class='txtcenter'>{{ movie.movieNm }}  <span style="color :gold;">{{stars[1]}}</span></div>
           </template>
           <div class="d-block">
             <div id='modalContent'>
               <div>
-                <p>영화 예고편</p>
+                <p style='font-weight : 600; font-size:150%;'>영화 예고편</p>
                 <iframe :src="mvUrl" frameborder="0" width=100% height='470' allowfullscreen></iframe>
               </div><hr class="my-3">
               <div class="container d-flex flex-column">
@@ -52,7 +53,7 @@
                     <!-- <title>{{ movie.movieNm }}</title> -->
                   </div>
                   <div class="col-9 d-flex flex-column">
-                    <p class="mb-1">영화 줄거리</p>
+                    <p class="mb-1 " style='font-weight : 600; font-size:150%;'>영화 줄거리</p>
                     <span class="flex-fill d-flex flex-row">
                       <p class="align-self-center">
                         {{movie.story}}
@@ -60,6 +61,7 @@
                     </span>
                   </div>
                 </div><hr class="my-3">
+                <span class='txtcenter' style=''>제작진</span>
                 <div class="container d-flex flex-row flex-wrap">
                   <div
                     v-for="(person, idx) in movie.peoples"
@@ -68,8 +70,8 @@
                     class="col-3"
                   >
                     <div>
-                      <span>{{person.name}} </span>
-                      <span v-if="person.role=='감독'">({{person.role}})</span>
+                      <span style='font-weight : 600'>{{person.name}} </span>
+                      <span v-if="person.role=='감독'" style='font-weight : 600'>({{person.role}})</span>
                     </div>
                     <img class="w-75" v-if="person.photo!=='이미지 없음'" :src="person.photo" alt="">
                     <img class="w-75" v-else src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="">
@@ -168,31 +170,31 @@ export default {
         btn3:false,
         btn4:false,
         btn5:false,
+        reviews:[],
       }
   },
   computed:{
     ...mapState([
       'crew',
       'users',
-      'reviews',
     ]),
     stars : function(){
       if(!this.score.length){
-        return [0.00, '☆'.repeat(5)]
+        return [0.00, '☆'.repeat(5),0,0,0,0,0]
       }else{
         const n = Object.keys(this.score).length
         let stack =0
         this.score.forEach(function(sc){stack+=sc.score})
-        const list1 = this.score.filter((sc)=> sc.score===1).length
-        const list2 = this.score.filter((sc)=> sc.score===2).length
-        const list3 = this.score.filter((sc)=> sc.score===3).length
-        const list4 = this.score.filter((sc)=> sc.score===4).length
-        const list5 = this.score.filter((sc)=> sc.score===5).length
+        let list1 = this.score.filter((sc)=> sc.score===1).length
+        let list2 = this.score.filter((sc)=> sc.score===2).length
+        let list3 = this.score.filter((sc)=> sc.score===3).length
+        let list4 = this.score.filter((sc)=> sc.score===4).length
+        let list5 = this.score.filter((sc)=> sc.score===5).length
         const value = parseFloat(stack/n).toFixed(2)
         const value2 = Math.floor(value)
         return [value,'★'.repeat(value2) + '☆'.repeat(5-value2), list1, list2, list3, list4, list5]
-      }
-    },
+        }
+        },
     nowUser : function(){
       return this.getUsername()
     }
@@ -319,8 +321,8 @@ export default {
               console.log(err)
             })
         }
-      }
-    },
+        }
+      },
     makeReview : function(code){
       if(!localStorage.getItem('jwt')){
         const ans = confirm('영화에 대한 리뷰를 남기려면 로그인 해주세요.')
@@ -339,7 +341,7 @@ export default {
           }
           const data = [item,config]
           this.$store.dispatch('makeReview',data)
-          this.$store.dispatch('getReviews',code)
+          this.getReview(code)
       }
       this.reviewContent=''
       this.reviewTitle=''
@@ -374,14 +376,26 @@ export default {
         .catch(err => {
           console.log(err)
         })
-    }
+    },
+    getReview : function(code){
+      axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
+        .then((res) => {
+          if(res.data=== []){
+            this.reviews=[]
+          }else{
+            this.reviews=res.data
+          }
+        })
+        .catch((err)=>{
+          console.log(err)
+        })    
+    },
   },
   created : function(){
     this.$emit('getImgUrl',this.movie.posterSrc)
     this.$emit('getCrew',this.movie.movieCd)
-    const code=this.movie.movieCd
-    this.$store.dispatch('getReviews',code)
-
+    let code=this.movie.movieCd
+    this.getReview(code)
     axios.get(`${SERVER_URL}/movies/${code}/movie_score_list/`)
       .then((res) => {
         const movieScore = res.data
@@ -512,5 +526,10 @@ b-button>p{
 .heartbutton{
   border: none;
   background: none;
+}
+.txtcenter{
+  text-align: center;
+  font-weight : 600;
+  font-size:150%;
 }
 </style>

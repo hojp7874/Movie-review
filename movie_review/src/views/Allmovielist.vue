@@ -14,7 +14,7 @@
 import Navbar from '@/components/Navbar.vue'
 // import MovieList from '@/components/MovieList.vue'
 import GenreMovie from '@/components/GenreMovie.vue'
-import { mapState } from 'vuex'
+
 
 
 export default {
@@ -24,11 +24,7 @@ export default {
     // MovieList,
     GenreMovie
   },
-  computed : {
-      ...mapState([
-          'movies',
-      ]),
-  }
+
 }
 </script>
 

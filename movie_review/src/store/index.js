@@ -102,17 +102,18 @@ export default new Vuex.Store({
       const filtered = state.movies.filter((movie)=>{
         return list.includes(movie.repGenreNm) 
       })
-      state.filterdMovie = filtered
-      if (filtered[1] == null) {
+      if (filtered[0] == null) {
         state.filterdMovie = state.movies
+      }else{
+        state.filterdMovie = filtered
       }
     },
     MAKE_REVIEW : function(){
       console.log('리뷰가 작성되었습니다.')
     },
-    GET_REVIEWS : function(state,data){
-      state.reviews = data
-    }
+    // GET_REVIEWS : function(state,data){
+    //   state.reviews = data
+    // }
     },
     actions: {
       getMovies: function ({commit}) {
@@ -166,21 +167,7 @@ export default new Vuex.Store({
           console.log(err)
         })
     },
-    getReviews:function({commit},code){
-      axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
-      .then((res) => {
-        if(res.data=== []){
-          const data =[]
-          commit('GET_REVIEWS', data)
-        }else{
-          const data = res.data
-          commit('GET_REVIEWS', data)
-        }
-      })
-      .catch((err)=>{
-        console.log(err)
-      })              
-    }
+
   },
   }
 )

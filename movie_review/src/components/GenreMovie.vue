@@ -34,7 +34,6 @@ export default {
     ...mapState([
       'genres',
       'genresState',
-      'movies',
       'filterdMovie'
     ]),
     // filteredMovie : function(){
