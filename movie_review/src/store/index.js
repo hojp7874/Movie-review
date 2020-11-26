@@ -103,6 +103,9 @@ export default new Vuex.Store({
         return list.includes(movie.repGenreNm) 
       })
       state.filterdMovie = filtered
+      if (filtered[1] == null) {
+        state.filterdMovie = state.movies
+      }
     },
     MAKE_REVIEW : function(){
       console.log('리뷰가 작성되었습니다.')
