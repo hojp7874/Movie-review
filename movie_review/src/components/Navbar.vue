@@ -34,6 +34,7 @@
             <template #button-content>
               <em class="whitefont">마이페이지</em>
             </template>
+            <a v-show="loginStatus" href="http://127.0.0.1:8000/admin/" class="ml-4">관리자 페이지</a>
             <b-dropdown-item v-show="loginStatus" @click='logout'><b-icon class='colblack' icon="power" aria-hidden="true"></b-icon><span class='colblack'>로그아웃</span></b-dropdown-item>
             <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Signup' }"><b-icon class='colblack' icon="person-fill"></b-icon><span class='colblack'> 회원가입</span></router-link></b-dropdown-item>
             <b-dropdown-item v-show="!loginStatus" href="#"><router-link :to="{ name: 'Login' }"><b-icon  class='colblack' icon="power" aria-hidden="true"></b-icon><span class='colblack'> 로그인</span></router-link></b-dropdown-item>
