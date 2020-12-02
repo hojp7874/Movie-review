@@ -11,7 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
     like_reviews = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     scores = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    is_superuser = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = User
-        fields = ('username', 'password', 'like_peoples', 'reviews', 'like_reviews', 'scores', 'comments')
+        fields = ('username', 'password', 'like_peoples', 'reviews', 'like_reviews', 'scores', 'comments', 'is_superuser')
