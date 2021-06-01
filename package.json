@@ -1,0 +1,15 @@
+{
+  "name": "final-pjt-front",
+  "version": "1.0.0",
+  "description": "movie review project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://lab.ssafy.com/hojp7874/final-pjt-front.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
