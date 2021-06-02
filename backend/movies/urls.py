@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('movie_list_create/', views.movie_list_create),
     path('people_list/', views.people_list),
+    
     # 영화 평점
     path('movie_score_create/', views.movie_score_create),
     path('<int:movie_pk>/movie_score_list/', views.movie_score_list),

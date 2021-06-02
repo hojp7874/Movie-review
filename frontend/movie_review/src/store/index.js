@@ -145,7 +145,7 @@ export default new Vuex.Store({
         })
         .catch((err)=>{
           console.log(err)
-        })      
+        })
     },
     getUser:function({commit}){
       axios.get(`${SERVER_URL}/accounts/get-users/`)
