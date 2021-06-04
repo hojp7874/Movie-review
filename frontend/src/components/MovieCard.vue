@@ -263,7 +263,7 @@ export default {
           //리뷰가 있으면
           if(scoreList[scoreIdx] === newScore){
             // 기존의 점수와 같으면 -> DELETE
-            axios.delete(`${SERVER_URL}/movies/${code}/movie_score_update_delete/`,{headers : {Authorization: this.setToken().headers.Authorization},data : {movie : code, score : scoreList[scoreIdx], user: user2}})
+            axios.delete(`${SERVER_URL}/movies/${code}/score`,{headers : {Authorization: this.setToken().headers.Authorization},data : {movie : code, score : scoreList[scoreIdx], user: user2}})
               .then(() => {
                 this.score.splice(scoreIdx,1)
                 this.btn1=false
@@ -277,7 +277,7 @@ export default {
               })
           }else{
             // 다르면 put
-            axios.patch(`${SERVER_URL}/movies/${code}/movie_score_update_delete/`,{data : {score : newScore}},config)
+            axios.patch(`${SERVER_URL}/movies/${code}/score`,{data : {score : newScore}},config)
               .then(() => {
                 this.score[scoreIdx].score = item.score
                 switch(item.score){
@@ -311,7 +311,7 @@ export default {
           }
         //POST
         }else{
-          axios.post(`${SERVER_URL}/movies/movie_score_create/`,item,config)
+          axios.post(`${SERVER_URL}/movies/score`,item,config)
             .then(() => {
               this.score.push(item)
                 switch(item.score){
@@ -413,7 +413,7 @@ export default {
     this.$emit('getCrew',this.movie.movieCd)
     let code=this.movie.movieCd
     this.getReview(code)
-    axios.get(`${SERVER_URL}/movies/${code}/movie_score_list/`)
+    axios.get(`${SERVER_URL}/movies/${code}/score-read`)
       .then((res) => {
         const movieScore = res.data
         this.score = movieScore
