@@ -128,17 +128,6 @@ def movie_score_list(request, movie_pk):
     return Response(serializer.data)
 
 
-# R (모두)
-# @api_view(['GET'])
-# @authentication_classes([JSONWebTokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def movie_score_all(request):
-#     if request.method == 'GET':
-#         scores = UserMovieScore.objects.filter(user=request.user)
-#         serializer = UserMovieScoreSerializer(scores, many=True)
-#         return Response(serializer.data)
-
-
 # 영화평점 UD
 @api_view(['GET', 'PATCH', 'DELETE'])
 @authentication_classes([JSONWebTokenAuthentication])
