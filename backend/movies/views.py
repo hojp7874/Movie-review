@@ -98,60 +98,67 @@ def movie_create(request, total_page):
                     # 영화와 인물 ManytoMany 매칭
                     people = get_object_or_404(People, name=name)
                     people.movies.add(movieObj)
-
             except:
                 pass
 
     return Response("Success", status=status.HTTP_201_CREATED)
 
 ## 영화 평점 CRUD
-# C
-@api_view(['POST'])
+# C, R(모두)
+@api_view(['GET', 'POST'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def movie_score_create(request):
-    serializer = UserMovieScoreSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save()
+def movie_score_create_listall(request):
+    if request.method == 'GET':
+        scores = UserMovieScore.objects.filter(user=request.user)
+        serializer = UserMovieScoreSerializer(scores, many=True)
         return Response(serializer.data)
+    else:
+        serializer = UserMovieScoreSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
 
 
 # R (하나)
 @api_view(['GET'])
 def movie_score_list(request, movie_pk):
-    if request.method == 'GET':
-        scores = UserMovieScore.objects.filter(movie=movie_pk)
-        serializer = UserMovieScoreSerializer(scores, many=True)
-        return Response(serializer.data)
+    scores = UserMovieScore.objects.filter(movie=movie_pk)
+    serializer = UserMovieScoreSerializer(scores, many=True)
+    return Response(serializer.data)
 
 
 # R (모두)
-@api_view(['GET'])
-@authentication_classes([JSONWebTokenAuthentication])
-@permission_classes([IsAuthenticated])
-def movie_score(request):
-    if request.method == 'GET':
-        scores = UserMovieScore.objects.filter(user=request.user)
-        serializer = UserMovieScoreSerializer(scores, many=True)
-        return Response(serializer.data)
+# @api_view(['GET'])
+# @authentication_classes([JSONWebTokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def movie_score_all(request):
+#     if request.method == 'GET':
+#         scores = UserMovieScore.objects.filter(user=request.user)
+#         serializer = UserMovieScoreSerializer(scores, many=True)
+#         return Response(serializer.data)
 
 
 # 영화평점 UD
-@api_view(['PATCH', 'DELETE'])
+@api_view(['GET', 'PATCH', 'DELETE'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def movie_score_update_delete(request, movie_pk):
-    score = get_object_or_404(UserMovieScore, movie=movie_pk)
+    # 로그인 안해도 가능하게 다시 만들어야 함.
+    # if request.method == 'GET':
+    #     scores = UserMovieScore.objects.filter(movie=movie_pk)
+    #     serializer = UserMovieScoreSerializer(scores, many=True)
+    #     return Response(serializer.data)
 
+    score = get_object_or_404(UserMovieScore, movie=movie_pk)
     if request.method == 'PUT':
         serializer = UserMovieScoreSerializer(score, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
     else:
-        print('###')
         score.delete()
-        return Response({ '영화 평점이 삭제되었습니다' })
+        return Response({'영화 평점이 삭제되었습니다'})
 
 
 ## 영화인 불러오기, 만들기
@@ -255,4 +262,4 @@ def comment_update_delete(request, comment_pk):
             return Response(serializer.data)
     else:
         comment.delete()
-        return Response({ 'delete id': comment_pk })
+        return Response({'delete id': comment_pk})

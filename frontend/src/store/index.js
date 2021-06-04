@@ -125,7 +125,7 @@ export default new Vuex.Store({
     },
     actions: {
       getMovies: function ({commit}) {
-        axios.get(`${SERVER_URL}/movies/movie_list/`)
+        axios.get(`${SERVER_URL}/movies/all`)
         .then((res) => {
           const movieData = res.data
           commit('GET_MOVIES', movieData)
@@ -138,7 +138,7 @@ export default new Vuex.Store({
       commit('LOGOUT')
     },
     getMovieCrew :function({commit}){
-      axios.get(`${SERVER_URL}/movies/people_list/`)
+      axios.get(`${SERVER_URL}/movies/people`)
         .then((res) => {
           const movieCrew = res.data
           commit('GET_MOVIE_CREW', movieCrew)
@@ -164,7 +164,7 @@ export default new Vuex.Store({
           Authorization: `JWT ${token}`
         }
       }
-      axios.get(`${SERVER_URL}/movies/movie_score/`,config)
+      axios.get(`${SERVER_URL}/movies/score`,config)
         .then((res) => {
           const data = res.data
           commit('SCORE_DATA', data)

@@ -3,17 +3,18 @@ from . import views
 
 
 urlpatterns = [
-    path('movie_create/<int:total_page>/', views.movie_create),
-    path('movie_list/', views.movie_list),
-    path('people_list/', views.people_list),
+    path('data-pipeline/<int:total_page>', views.movie_create),
+    path('all', views.movie_list),
+    path('people', views.people_list),
 
     # 영화 평점
-    path('movie_score_create/', views.movie_score_create),
-    path('<int:movie_pk>/movie_score_list/', views.movie_score_list),
-    path('<int:movie_pk>/movie_score_update_delete/', views.movie_score_update_delete),
+    path('score', views.movie_score_create_listall),
+    path('<int:movie_pk>/score', views.movie_score_update_delete),
+    path('<int:movie_pk>/score-read', views.movie_score_list),
+    # path('<int:movie_pk>/movie_score_list', views.movie_score_list),
     
     # 영화평점 싹다 불러오기
-    path('movie_score/', views.movie_score),
+    # path('score/all', views.movie_score_all),
 
     # 리뷰 CRUD, 좋아요
     path('review_create/', views.review_create),
