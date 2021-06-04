@@ -11,10 +11,6 @@ urlpatterns = [
     path('score', views.movie_score_create_listall),
     path('<int:movie_pk>/score', views.movie_score_update_delete),
     path('<int:movie_pk>/score-read', views.movie_score_list),
-    # path('<int:movie_pk>/movie_score_list', views.movie_score_list),
-    
-    # 영화평점 싹다 불러오기
-    # path('score/all', views.movie_score_all),
 
     # 리뷰 CRUD, 좋아요
     path('review_create/', views.review_create),
