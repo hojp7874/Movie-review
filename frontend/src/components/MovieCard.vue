@@ -277,7 +277,7 @@ export default {
               })
           }else{
             // 다르면 put
-            axios.patch(`${SERVER_URL}/movies/${code}/score`,{data : {score : newScore}},config)
+            axios.put(`${SERVER_URL}/movies/${code}/score`, item, config)
               .then(() => {
                 this.score[scoreIdx].score = item.score
                 switch(item.score){
@@ -311,7 +311,7 @@ export default {
           }
         //POST
         }else{
-          axios.post(`${SERVER_URL}/movies/score`,item,config)
+          axios.post(`${SERVER_URL}/movies/${code}/score`,item, config)
             .then(() => {
               this.score.push(item)
                 switch(item.score){
@@ -413,7 +413,7 @@ export default {
     this.$emit('getCrew',this.movie.movieCd)
     let code=this.movie.movieCd
     this.getReview(code)
-    axios.get(`${SERVER_URL}/movies/${code}/score-read`)
+    axios.get(`${SERVER_URL}/movies/${code}/score`)
       .then((res) => {
         const movieScore = res.data
         this.score = movieScore

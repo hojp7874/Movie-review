@@ -125,7 +125,7 @@ export default new Vuex.Store({
     },
     actions: {
       getMovies: function ({commit}) {
-        axios.get(`${SERVER_URL}/movies/all`)
+        axios.get(`${SERVER_URL}/movies`)
         .then((res) => {
           const movieData = res.data
           commit('GET_MOVIES', movieData)

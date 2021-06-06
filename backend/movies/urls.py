@@ -3,14 +3,12 @@ from . import views
 
 
 urlpatterns = [
-    path('data-pipeline/<int:total_page>', views.movie_create),
-    path('all', views.movie_list),
-    path('people', views.people_list),
+    path('', views.DataPipelineView.as_view()),
+    path('people/', views.people_list),
 
     # 영화 평점
-    path('score', views.movie_score_create_listall),
-    path('<int:movie_pk>/score', views.movie_score_update_delete),
-    path('<int:movie_pk>/score-read', views.movie_score_list),
+    path('score', views.TestMovieScoreView.as_view()),
+    path('<int:movie_pk>/score', views.MovieScoreView.as_view()),
 
     # 리뷰 CRUD, 좋아요
     path('review_create/', views.review_create),
