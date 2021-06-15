@@ -366,7 +366,7 @@ export default {
     reviewLike:function(review,bool){
       const user2 =this.getUsername()
       const config = this.setToken()
-      axios.post(`${SERVER_URL}/movies/${review.id}/review_like/`,bool,config)
+      axios.post(`${SERVER_URL}/movies/review/${review.id}/like`,bool,config)
         .then(()=>{
           const idx = this.reviews.map(a=>a.id).indexOf(review.id)
           if(bool){
@@ -395,7 +395,7 @@ export default {
         })
     },
     getReview : function(code){
-      axios.get(`${SERVER_URL}/movies/${code}/review_list/`)
+      axios.get(`${SERVER_URL}/movies/${code}/reviews`)
         .then((res) => {
           if(res.data=== []){
             this.reviews=[]

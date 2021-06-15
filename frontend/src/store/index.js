@@ -125,7 +125,7 @@ export default new Vuex.Store({
     },
     actions: {
       getMovies: function ({commit}) {
-        axios.get(`${SERVER_URL}/movies`)
+        axios.get(`${SERVER_URL}/movies/data-pipeline`)
         .then((res) => {
           const movieData = res.data
           commit('GET_MOVIES', movieData)
@@ -183,7 +183,7 @@ export default new Vuex.Store({
       commit('STATE_CHANGE',idx)
     },
     makeReview : function({commit},data){
-      axios.post(`${SERVER_URL}/movies/review_create/`,data[0],data[1])
+      axios.post(`${SERVER_URL}/movies/review`,data[0],data[1])
         .then(() => {
           commit('MAKE_REVIEW')
         })

@@ -135,29 +135,6 @@ class MovieScoreView(APIView):
     @permission_classes([IsAuthenticated])
     def delete(self, request, movie_pk):
         score = get_object_or_404(UserMovieScore, movie=movie_pk)
-        print(score)
-        score.delete()
-        return Response({'영화 평점이 삭제되었습니다'})
-
-
-# 영화평점 UD
-@api_view(['GET', 'PATCH', 'DELETE'])
-@authentication_classes([JSONWebTokenAuthentication])
-@permission_classes([IsAuthenticated])
-def movie_score_update_delete(request, movie_pk):
-    # 로그인 안해도 가능하게 다시 만들어야 함.
-    # if request.method == 'GET':
-    #     scores = UserMovieScore.objects.filter(movie=movie_pk)
-    #     serializer = UserMovieScoreSerializer(scores, many=True)
-    #     return Response(serializer.data)
-
-    score = get_object_or_404(UserMovieScore, movie=movie_pk)
-    if request.method == 'PUT':
-        serializer = UserMovieScoreSerializer(score, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-    else:
         score.delete()
         return Response({'영화 평점이 삭제되었습니다'})
 
