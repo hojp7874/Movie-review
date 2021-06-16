@@ -148,7 +148,7 @@ export default new Vuex.Store({
         })
     },
     getUser:function({commit}){
-      axios.get(`${SERVER_URL}/accounts/get-users/`)
+      axios.get(`${SERVER_URL}/accounts/users`)
         .then((res) => {
           const users = res.data
           commit('GET_USERS', users)

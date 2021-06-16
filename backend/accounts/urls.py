@@ -4,7 +4,7 @@ from . import views
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
 urlpatterns = [
-    path('get-users/', views.get_users),
+    path('users/', views.get_users),
     
     path('signup/', views.signup),
     path('api-token-auth/', obtain_jwt_token),

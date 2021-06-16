@@ -26,7 +26,6 @@ def get_users(request):
     # users = get_user_model()
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
-    print('serializer complete')
     return Response(serializer.data)
 
 
@@ -56,15 +55,12 @@ def signup(request):
 
 @api_view(['PUT', 'DELETE'])
 def user_update_delete(request):
-    print('call')
     if request.method == 'PUT':
-        print('PUT')
         #1-1. Client에서 온 데이터를 받아서
         old_password = request.data.get('oldPassword')
             
         #1-2. 패스워드 일치 여부 체크
         if old_password != request.user.password:
-            print(request.user.password)
             return Response({'error': '이전 비밀번호가 일치하지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
             
         #2. UserSerializer를 통해 데이터 직렬화
@@ -80,7 +76,6 @@ def user_update_delete(request):
         # password는 직렬화 과정에는 포함 되지만 → 표현(response)할 때는 나타나지 않는다.
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
-        print('DELETE')
         user = User.objects.get(pk=request.user)
         user.delete()
         return Response({'id가 삭제되었습니다'})
