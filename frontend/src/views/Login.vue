@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     login: function() {
-      axios.post(`${SERVER_URL}/accounts/api-token-auth`,this.credentials)
+      axios.post(`${SERVER_URL}/accounts/api-token-auth/`,this.credentials)
           .then((res)=>{
             localStorage.setItem('jwt',res.data.token)
             this.$store.dispatch('login',true)

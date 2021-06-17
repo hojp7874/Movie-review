@@ -125,7 +125,7 @@ export default new Vuex.Store({
     },
     actions: {
       getMovies: function ({commit}) {
-        axios.get(`${SERVER_URL}/movies/data-pipeline`)
+        axios.get(`${SERVER_URL}/movies/data-pipeline/`)
         .then((res) => {
           const movieData = res.data
           commit('GET_MOVIES', movieData)
@@ -138,7 +138,7 @@ export default new Vuex.Store({
       commit('LOGOUT')
     },
     getMovieCrew :function({commit}){
-      axios.get(`${SERVER_URL}/movies/people`)
+      axios.get(`${SERVER_URL}/movies/people/`)
         .then((res) => {
           const movieCrew = res.data
           commit('GET_MOVIE_CREW', movieCrew)
@@ -148,7 +148,7 @@ export default new Vuex.Store({
         })
     },
     getUser:function({commit}){
-      axios.get(`${SERVER_URL}/accounts/users`)
+      axios.get(`${SERVER_URL}/accounts/users/`)
         .then((res) => {
           const users = res.data
           commit('GET_USERS', users)
@@ -164,7 +164,7 @@ export default new Vuex.Store({
           Authorization: `JWT ${token}`
         }
       }
-      axios.get(`${SERVER_URL}/movies/score`,config)
+      axios.get(`${SERVER_URL}/movies/score/`,config)
         .then((res) => {
           const data = res.data
           commit('SCORE_DATA', data)
@@ -183,7 +183,7 @@ export default new Vuex.Store({
       commit('STATE_CHANGE',idx)
     },
     makeReview : function({commit},data){
-      axios.post(`${SERVER_URL}/movies/review`,data[0],data[1])
+      axios.post(`${SERVER_URL}/movies/review/`,data[0],data[1])
         .then(() => {
           commit('MAKE_REVIEW')
         })

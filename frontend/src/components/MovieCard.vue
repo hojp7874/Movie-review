@@ -263,7 +263,7 @@ export default {
           //리뷰가 있으면
           if(scoreList[scoreIdx] === newScore){
             // 기존의 점수와 같으면 -> DELETE
-            axios.delete(`${SERVER_URL}/movies/${code}/score`,{headers : {Authorization: this.setToken().headers.Authorization},data : {movie : code, score : scoreList[scoreIdx], user: user2}})
+            axios.delete(`${SERVER_URL}/movies/${code}/score/`,{headers : {Authorization: this.setToken().headers.Authorization},data : {movie : code, score : scoreList[scoreIdx], user: user2}})
               .then(() => {
                 this.score.splice(scoreIdx,1)
                 this.btn1=false
@@ -277,7 +277,7 @@ export default {
               })
           }else{
             // 다르면 put
-            axios.put(`${SERVER_URL}/movies/${code}/score`, item, config)
+            axios.put(`${SERVER_URL}/movies/${code}/score/`, item, config)
               .then(() => {
                 this.score[scoreIdx].score = item.score
                 switch(item.score){
@@ -311,7 +311,7 @@ export default {
           }
         //POST
         }else{
-          axios.post(`${SERVER_URL}/movies/${code}/score`,item, config)
+          axios.post(`${SERVER_URL}/movies/${code}/score/`,item, config)
             .then(() => {
               this.score.push(item)
                 switch(item.score){
@@ -366,7 +366,7 @@ export default {
     reviewLike:function(review,bool){
       const user2 =this.getUsername()
       const config = this.setToken()
-      axios.post(`${SERVER_URL}/movies/review/${review.id}/like`,bool,config)
+      axios.post(`${SERVER_URL}/movies/review/${review.id}/like/`,bool,config)
         .then(()=>{
           const idx = this.reviews.map(a=>a.id).indexOf(review.id)
           if(bool){
@@ -395,7 +395,7 @@ export default {
         })
     },
     getReview : function(code){
-      axios.get(`${SERVER_URL}/movies/${code}/reviews`)
+      axios.get(`${SERVER_URL}/movies/${code}/reviews/`)
         .then((res) => {
           if(res.data=== []){
             this.reviews=[]
@@ -413,7 +413,7 @@ export default {
     this.$emit('getCrew',this.movie.movieCd)
     let code=this.movie.movieCd
     this.getReview(code)
-    axios.get(`${SERVER_URL}/movies/${code}/score`)
+    axios.get(`${SERVER_URL}/movies/${code}/score/`)
       .then((res) => {
         const movieScore = res.data
         this.score = movieScore
