@@ -3,7 +3,7 @@ from .secret import kobis_key
 class URLMaker_kobis:
     
     url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest'
-    key = kobis_key()
+    key = kobis_key
 
     # key값 defalt 받기
     def __init__(self, key=key):
