@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import status, mixins, generics
 from rest_framework.decorators import authentication_classes, permission_classes
@@ -8,6 +10,7 @@ from rest_framework.response import Response
 
 from .serializers import UserSerializer
 from module import custom_decorator
+from module.error import ConfirmError
 
 
 class UserList(generics.ListAPIView):
@@ -28,9 +31,13 @@ class UserList(generics.ListAPIView):
 
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            saved_user = serializer.save()
-            saved_user.set_password(password)
-            saved_user.save()
+            try:
+                validate_password(password=password, user=self.User)
+            except ValidationError as e:
+                return Response({'error': e}, status=status.HTTP_400_BAD_REQUEST)
+            user = serializer.save()
+            user.set_password(password)
+            user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -48,19 +55,23 @@ class UserDetail(mixins.DestroyModelMixin,
     @permission_classes([IsAuthenticated])
     @custom_decorator.authorization
     def patch(self, request, username: str):
-        old_password = request.data.get('oldPassword')
+        password = request.data.get('password')
         new_password = request.data.get('newPassword')
-        if not check_password(old_password, request.user.password):
+        new_password_confirmation = request.data.get('newPasswordConfirmation')
+        if password and not check_password(password, request.user.password):
+            return Response({'error': '비밀번호가 틀렸습니다.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if new_password and new_password != new_password_confirmation:
             return Response({'error': '비밀번호가 일치하지 않습니다.'},
                             status=status.HTTP_400_BAD_REQUEST)
-
+                            
         user = get_object_or_404(self.User, username=username)
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
-            saved_user = serializer.save()
+            user = serializer.save()
             if new_password:
-                saved_user.set_password(new_password)
-                saved_user.save()
+                user.set_password(new_password)
+                user.save()
         return Response(serializer.data)
     
     @authentication_classes([IsAuthenticated])

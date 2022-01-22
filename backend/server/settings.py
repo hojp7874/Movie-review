@@ -119,6 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+    {
+        'NAME': 'module.custom_password_validator.ExcludeValidator',
+    },
 ]
 
 
@@ -148,10 +151,10 @@ AUTH_USER_MODEL = 'accounts.User'
 
 import datetime 
 
+
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
-
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': (
